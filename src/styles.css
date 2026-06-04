@@ -1,0 +1,19 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+
+    --primary-light: #D8C7A1;
+    --primary-dark: #2B2B2F;
+    --secondary-light: #9FB36B;
+    --secondary-mid: #3A4A2A;
+    --secondary-dark: #1C2B24;
+    --tertiary-light: #FF6A00;
+    --tertiary-dark: #5A2A82;
+
+}
