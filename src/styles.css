@@ -32,6 +32,7 @@ ul {
 #container {
 
     display: flex;
+    align-items: flex-start;
 
 }
 
@@ -43,14 +44,19 @@ ul {
     margin: 8px;
     width: 250px;
     box-shadow: 5px 5px 5px var(--primary-mid-dark);
+
+    display: flex;
+    flex-flow: column;
+    align-items: center;
     
 }
 
-.list .list-header {
+.list-header {
 
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
 
+    width: 100%;
     padding: 5px;
     background-color: var(--primary-light);
     border-bottom: 2px solid var(--primary-dark);
@@ -59,33 +65,66 @@ ul {
 
 }
 
-.list-header button {
+.list-delete-button {
 
     padding: 5px;
     background-color: var(--primary-light);
     border: 1px solid var(--primary-dark);
     border-radius: 5px;
     color: var(--primary-dark);
+    align-self: center;
+    margin-bottom: 5px;
+
+}
+
+.list-body {
+
+    margin-bottom: 16px;
+    width: 100%;
+
+}
+
+.list-body-heading, .item-body-heading {
+
+    display: flex;
+    justify-content: space-between;
+    margin: 5px;
 
 }
 
 .item-list {
 
     margin-bottom: 8px;
+    width: 100%;
+
+}
+
+.item {
+
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    background-color: var(--primary-mid);
+    border-bottom: 1px solid var(--primary-dark);
 
 }
 
 .item-header {
 
+    width: 100%;
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid var(--primary-mid);
+    align-items: center;
 
+    background-color: var(--primary-mid-dark);
+    border-bottom: 1px solid var(--primary-dark);
+    border-top: 1px solid var(--primary-dark);
     padding: 5px;
+    font-weight: 700;
 
 }
 
-.item-header button {
+.item-header button, .item-delete-button {
 
     padding: 5px;
     background-color: var(--primary-mid);
@@ -97,6 +136,38 @@ ul {
 
 .item-body {
 
-    display:none;
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+
+}
+
+.item-body div {
+
+    margin: 5px;
+
+}
+
+.item-body-header {
+
+    display: flex;
+    justify-content: space-between;
+    margin: 5px;
+
+}
+
+.item-delete-button {
+
+    background-color: var(--primary-mid-dark);
+    margin-top: 16px;
+    margin-bottom: 8px;
+    align-self: center;
+
+}
+
+.hidden {
+
+    display: none;
 
 }

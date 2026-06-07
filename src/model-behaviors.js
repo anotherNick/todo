@@ -8,7 +8,7 @@ export const canBeCompleted = (state) => ({
 });
 
 
-export const canHaveItems = (state) => ({
+export const canHoldItems = (state) => ({
     items: [],
     
     addItem: (newItem) => {
@@ -24,8 +24,24 @@ export const canHaveItems = (state) => ({
     removeItem: (id) => {
         const index = state.items.findIndex(item => item.id === id);
 
-        if(index !== -1){
+        if(index !== -1) {
             state.items.splice(index, 1);
+        } else {
+            state.items.forEach(subItem => {
+                const index = subItem.items.findIndex(item => item.id === id);
+
+                if(index !== -1){
+                    subItem.items.splice(index, 1);
+                }
+            });
+        }
+    },
+    
+    getItem: (id) => {
+        const index = state.items.findIndex(item => item.id === id);
+
+        if(index !== -1){
+            return state.items[index];
         }
     },
 

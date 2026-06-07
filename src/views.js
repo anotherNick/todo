@@ -1,7 +1,12 @@
 export default class View {
 
+    getDate(date) {
 
-    itemView(item){
+        return date ? date : "N/A";
+
+    }
+
+    itemView(item) {
 
         const itemLi = document.createElement('li');
             itemLi.dataset.itemId = item.id;
@@ -19,26 +24,29 @@ export default class View {
             itemHeader.append(itemHamBtn);
 
             const itemBody = document.createElement('div')
-                itemBody.className = "item-body";
-                const itemDue = document.createElement('div');
-                    itemDue.className = "item-due-date";
-                    itemDue.textContent = 'Placeholder due date';
+                itemBody.classList.add("item-body", "hidden");
+                const itemBodyHeader = document.createElement('div');
+                    itemBodyHeader.className = "item-body-heading";
+                    const itemDue = document.createElement('div');
+                        itemDue.className = "item-due-date";
+                        itemDue.textContent = this.getDate(item.due);
+                    const itemPriority = document.createElement('div');
+                        itemPriority.className = "list-priority";
+                        itemPriority.textContent = "Priority: " + item.priority;
                 const itemDesc = document.createElement('div');
                     itemDesc.className = "item-description";
                     itemDesc.textContent = item.desc;
-                const itemPriority = document.createElement('div');
-                    itemPriority.className = "list-priority";
-                    itemPriority.textContent = "Priority: " + item.priority;
                 const itemNotes = document.createElement('div');
                     itemNotes.className = "item-notes";
                     itemNotes.textContent = "Notes: " + item.notes;
                 const itemDeleteBtn = document.createElement('button');
                     itemDeleteBtn.value = item.id;
-                    itemDeleteBtn.textContent = 'X';
+                    itemDeleteBtn.textContent = 'Delete Item';
                     itemDeleteBtn.className = 'item-delete-button';
-            itemBody.append(itemDue);
+            itemBodyHeader.append(itemDue);
+            itemBodyHeader.append(itemPriority);
+            itemBody.append(itemBodyHeader);
             itemBody.append(itemDesc);
-            itemBody.append(itemPriority);
             itemBody.append(itemNotes);
             itemBody.append(itemDeleteBtn);
 
@@ -59,26 +67,25 @@ export default class View {
                     const listTitle = document.createElement('span');
                         listTitle.className = "list-title";
                         listTitle.textContent = list.title;
-                    const listHamBtn = document.createElement('button');
-                        listHamBtn.className = "list-collapse-button";
-                        listHamBtn.textContent = "\u2261";
                 listHeader.append(listTitle);
-                listHeader.append(listHamBtn);
 
                 const listBody = document.createElement('div')
                     listBody.className = "list-body";
-                    const listDue = document.createElement('div');
-                        listDue.className = "list-due-date";
-                        listDue.textContent = 'Placeholder due date';
+                    const listBodyHeading = document.createElement('div');
+                        listBodyHeading.className = "list-body-heading";
+                        const listDue = document.createElement('div');
+                            listDue.className = "list-due-date";
+                            listDue.textContent = this.getDate(list.due);
+                        const listPriority = document.createElement('div');
+                            listPriority.className = "list-priority";
+                            listPriority.textContent = "Priority: " + list.priority;
                     const listDesc = document.createElement('div');
                         listDesc.className = "list-description";
                         listDesc.textContent = list.desc;
-                    const listPriority = document.createElement('div');
-                        listPriority.className = "list-priority";
-                        listPriority.textContent = "Priority: " + list.priority;
-                listBody.append(listDue);
+                listBodyHeading.append(listPriority);
+                listBodyHeading.append(listDue);
+                listBody.append(listBodyHeading);
                 listBody.append(listDesc);
-                listBody.append(listPriority);
 
             listDiv.append(listHeader);
             listDiv.append(listBody);
@@ -96,7 +103,7 @@ export default class View {
 
             const listDeleteBtn = document.createElement('button');
                 listDeleteBtn.value = list.id;
-                listDeleteBtn.textContent = 'X';
+                listDeleteBtn.textContent = 'Delete List'
                 listDeleteBtn.className = 'list-delete-button';
             
             listDiv.append(itemContainer);
@@ -106,7 +113,7 @@ export default class View {
     }
 
     renderLists(data) {
-
+        
         const lists = JSON.parse(data);
         const listContainer = document.querySelector('#container');
 

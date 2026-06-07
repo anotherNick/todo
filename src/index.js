@@ -1,19 +1,21 @@
 import "./styles.css";
-import { toDoItem, toDoList, container } from "./model-factories.js"
+import { toDoItem, toDoList, project } from "./model-factories.js"
 import View from "./views.js";
+import { format } from "date-fns";
 
+const date = format(new Date(), "PP");
 
 const newList = toDoList("default", container.id);
-const secondList = toDoList("not default", container.id);
+const secondList = toDoList("not default", container.id, date);
 const thirdList = toDoList("an empty list", container.id);
 const newItem = toDoItem("test item", newList.id);
-const secondItem = toDoItem('another test item', newList.id, null, 'test description', "Low", "test note");
-const thirdItem = toDoItem('third todo item', newList.id, null, 'third description', "Mediun", "third notes" )
-const fourthItem = toDoItem('fourth todo item', newList.id, null, 'fourth description', "High", "fourth notes" )
+const secondItem = toDoItem('another test item', newList.id, date, 'test description', "Low", "test note");
+const thirdItem = toDoItem('third todo item', newList.id, date, 'third description', "Mediun", "third notes" )
+const fourthItem = toDoItem('fourth todo item', newList.id, date, 'fourth description', "High", "fourth notes" )
 
-container.addItem(newList);
-container.addItem(secondList);
-container.addItem(thirdList);
+project.addItem(newList);
+project.addItem(secondList);
+project.addItem(thirdList);
 
 newList.addItem(newItem);
 newList.addItem(secondItem);
@@ -25,7 +27,7 @@ secondList.addItem(thirdItem);
 secondList.addItem(fourthItem);
 
 const listView = new View();
-listView.renderLists(JSON.stringify(container));
+listView.renderLists(JSON.stringify(project));
 
 const hamBtns = document.querySelectorAll('.item-collapse-button');
 for(const button of hamBtns) {
@@ -33,7 +35,38 @@ for(const button of hamBtns) {
     button.addEventListener('click', (e) => {
 
         const parentLi = e.target.closest('li');
+        parentLi.querySelector('.item-body').classList.toggle('hidden');
 
     });
     
 }
+
+const listDeleteBtns = document.querySelectorAll('.list-delete-button');
+for(const button of listDeleteBtns) {
+
+    button.addEventListener('click', (e) => {
+
+        const listId = e.target.value;
+        const parentDiv = e.target.closest('.list');
+        project.removeItem(listId);
+        parentDiv.remove();
+
+    });
+
+}
+
+const itemDeleteBtns = document.querySelectorAll('.item-delete-button');
+for(const button of itemDeleteBtns) {
+
+    button.addEventListener('click', (e) => {
+
+        const itemId = e.target.value;
+        const parentItem = e.target.closest('.item');
+        project.removeItem(itemId);
+        parentItem.remove();
+
+    });
+
+}
+
+console.log(project)
