@@ -1,9 +1,10 @@
 import "./styles.css";
-import { toDoItem, toDoList, project } from "./model-factories.js";
+import { toDoItem, toDoList, toDoProject } from "./model-factories.js";
 import View from "./views.js";
 import { events, EventBus } from "./controller.js";
 import { format } from "date-fns";
 
+const project = toDoProject();
 const pubSub = new EventBus();
 const date = format(new Date(), "PP");
 

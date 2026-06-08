@@ -30,7 +30,7 @@ export const toDoList = (title, parentID, due = null, priority = "Low") => {
 
 }
 
-export const project = (() => {
+export const toDoProject = () => {
 
     let state = {
         id: 0,
@@ -38,4 +38,4 @@ export const project = (() => {
 
     return Object.assign(state, canHoldItems(state), canPubSub(state));
 
-})();
+};
