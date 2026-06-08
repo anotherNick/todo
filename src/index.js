@@ -1,13 +1,19 @@
 import "./styles.css";
-import { toDoItem, toDoList, project } from "./model-factories.js"
+import { toDoItem, toDoList, project } from "./model-factories.js";
 import View from "./views.js";
+import { events, EventBus } from "./controller.js";
 import { format } from "date-fns";
 
+const pubSub = new EventBus();
 const date = format(new Date(), "PP");
 
 const newList = toDoList("default", container.id);
+      newList.subscribe(pubSub, events.item_deleted, (e) => { 
+        newList.removeItem(e); 
+    });
 const secondList = toDoList("not default", container.id, date);
 const thirdList = toDoList("an empty list", container.id);
+
 const newItem = toDoItem("test item", newList.id);
 const secondItem = toDoItem('another test item', newList.id, date, 'test description', "Low", "test note");
 const thirdItem = toDoItem('third todo item', newList.id, date, 'third description', "Mediun", "third notes" )
@@ -61,9 +67,11 @@ for(const button of itemDeleteBtns) {
     button.addEventListener('click', (e) => {
 
         const itemId = e.target.value;
+        const parentId = e.target.dataset.parentId;
         const parentItem = e.target.closest('.item');
-        project.removeItem(itemId);
         parentItem.remove();
+
+        pubSub.publish(events.item_deleted, { itemId, parentId});
 
     });
 

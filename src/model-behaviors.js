@@ -21,20 +21,19 @@ export const canHoldItems = (state) => ({
         }
     },
 
-    removeItem: (id) => {
-        const index = state.items.findIndex(item => item.id === id);
+    removeItem: (details) => {
+        
+        if(details.parentId === state.id){
 
-        if(index !== -1) {
-            state.items.splice(index, 1);
-        } else {
-            state.items.forEach(subItem => {
-                const index = subItem.items.findIndex(item => item.id === id);
+            const index = state.items.findIndex(item => item.id === details.itemId);
 
-                if(index !== -1){
-                    subItem.items.splice(index, 1);
-                }
-            });
+            if(index !== -1) {
+                state.items[index].unsubscribeAll();
+                state.items.splice(index, 1);
+            }
+
         }
+
     },
     
     getItem: (id) => {
@@ -72,5 +71,26 @@ export const canBeNested = (state) => ({
 export const canBeReordered = (state) => ({
 
 
+
+});
+
+export const canPubSub = (state) => ({
+
+    unSubList: [],
+    
+    subscribe: (bus, event, callback) => {
+        const unsubscribe = bus.subscribe(event, callback);
+        state.unSubList.push(unsubscribe);
+    },
+
+    unsubscribeAll: () => {
+        state.unSubList.forEach(fn => {
+
+            fn();
+
+        });
+        
+        state.unSubList = [];
+    },
 
 });

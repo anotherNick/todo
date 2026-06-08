@@ -43,6 +43,7 @@ export default class View {
                     itemDeleteBtn.value = item.id;
                     itemDeleteBtn.textContent = 'Delete Item';
                     itemDeleteBtn.className = 'item-delete-button';
+                    itemDeleteBtn.dataset.parentId = item.parentID;
             itemBodyHeader.append(itemDue);
             itemBodyHeader.append(itemPriority);
             itemBody.append(itemBodyHeader);

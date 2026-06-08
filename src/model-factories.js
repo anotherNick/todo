@@ -1,4 +1,4 @@
-import { canBeCompleted, canHoldItems, canBeUpdated } from "./model-behaviors.js";
+import { canBeCompleted, canHoldItems, canBeUpdated, canPubSub } from "./model-behaviors.js";
 
 export const toDoItem = (title, parentID, due = null, desc = null, priority = "Low", notes = null) => {
 
@@ -12,7 +12,7 @@ export const toDoItem = (title, parentID, due = null, desc = null, priority = "L
         notes,
     }
 
-    return Object.assign(state, canBeUpdated(state), canBeCompleted(state));
+    return Object.assign(state, canBeUpdated(state), canBeCompleted(state), canPubSub(state));
 
 }
 
@@ -26,7 +26,7 @@ export const toDoList = (title, parentID, due = null, priority = "Low") => {
         priority,
     }
 
-    return Object.assign(state, canHoldItems(state), canBeUpdated(state));
+    return Object.assign(state, canHoldItems(state), canBeUpdated(state), canPubSub(state));
 
 }
 
@@ -36,6 +36,6 @@ export const project = (() => {
         id: 0,
     }
 
-    return Object.assign(state, canHoldItems(state));
+    return Object.assign(state, canHoldItems(state), canPubSub(state));
 
 })();
