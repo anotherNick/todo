@@ -1,3 +1,44 @@
+export const canHoldEntities = (state) => ({
+    projects: [],
+    lists: [],
+    items: [],
+    subItems: [],
+
+    addEntity: (newEntity) => {
+        const index = state[newEntity.type].findIndex(entity => entity.id === newEntity.id);
+
+        if(index === -1){
+            state[newEntity.type].push(newEntity);
+        }else{
+            throw new Error('entity ID must be unique!');
+        }
+
+    },
+
+    removeEntity: (details) => {
+
+        const index = state[details.type].findIndex(entity => entity.id === details.id);
+
+        if(index !== -1) {
+            state[details.type].splice(index, 1);
+        }
+
+    },
+
+    getEntity: (type, id) => {
+        const index = state[type].findIndex(item => item.id === id);
+
+        if(index !== -1){
+            return state[type][index];
+        }
+    },
+    
+    getEntities: (type) => {
+        return state[type];
+    },
+
+
+});
 
 export const canBeCompleted = (state) => ({
     complete: false,
@@ -5,49 +46,6 @@ export const canBeCompleted = (state) => ({
     toggleComplete: () => { 
         state.complete = (state.complete === true ? false : true); 
     },
-});
-
-
-export const canHoldItems = (state) => ({
-    items: [],
-    
-    addItem: (newItem) => {
-        const index = state.items.findIndex(item => item.id === newItem.id);
-        
-        if(index === -1){
-            state.items.push(newItem);
-        }else{
-            throw new Error('item id must be unique!')
-        }
-    },
-
-    removeItem: (details) => {
-        
-        if(details.parentId === state.id){
-
-            const index = state.items.findIndex(item => item.id === details.itemId);
-
-            if(index !== -1) {
-                state.items[index].unsubscribeAll();
-                state.items.splice(index, 1);
-            }
-
-        }
-
-    },
-    
-    getItem: (id) => {
-        const index = state.items.findIndex(item => item.id === id);
-
-        if(index !== -1){
-            return state.items[index];
-        }
-    },
-
-    getItems: () => {
-        return state.items;
-    },
-
 });
 
 // Expects an object with only the properties and values to be replaced.

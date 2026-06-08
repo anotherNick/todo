@@ -1,37 +1,33 @@
 import "./styles.css";
-import { toDoItem, toDoList, toDoProject } from "./model-factories.js";
+import { toDoItem, toDoList, toDoProject, toDoSystem } from "./model-factories.js";
 import View from "./views.js";
 import { events, EventBus } from "./controller.js";
 import { format } from "date-fns";
 
+const ToDo = toDoSystem();
 const project = toDoProject();
 const pubSub = new EventBus();
 const date = format(new Date(), "PP");
 
 const newList = toDoList("default", container.id);
-      newList.subscribe(pubSub, events.item_deleted, (e) => { 
-        newList.removeItem(e); 
-    });
 const secondList = toDoList("not default", container.id, date);
 const thirdList = toDoList("an empty list", container.id);
 
 const newItem = toDoItem("test item", newList.id);
 const secondItem = toDoItem('another test item', newList.id, date, 'test description', "Low", "test note");
-const thirdItem = toDoItem('third todo item', newList.id, date, 'third description', "Mediun", "third notes" )
-const fourthItem = toDoItem('fourth todo item', newList.id, date, 'fourth description', "High", "fourth notes" )
+const thirdItem = toDoItem('third todo item', newList.id, date, 'third description', "Mediun", "third notes" );
+const fourthItem = toDoItem('fourth todo item', newList.id, date, 'fourth description', "High", "fourth notes" );
 
-project.addItem(newList);
-project.addItem(secondList);
-project.addItem(thirdList);
+ToDo.addEntity(project);
+ToDo.addEntity(newList);
+ToDo.addEntity(secondList);
+ToDo.addEntity(thirdList);
+ToDo.addEntity(newItem);
+ToDo.addEntity(secondItem);
+ToDo.addEntity(thirdItem);
+ToDo.addEntity(fourthItem);
 
-newList.addItem(newItem);
-newList.addItem(secondItem);
-newList.addItem(thirdItem);
-newList.addItem(fourthItem);
-secondList.addItem(newItem);
-secondList.addItem(secondItem);
-secondList.addItem(thirdItem);
-secondList.addItem(fourthItem);
+console.log(ToDo);
 
 const listView = new View();
 listView.renderLists(JSON.stringify(project));
@@ -72,10 +68,8 @@ for(const button of itemDeleteBtns) {
         const parentItem = e.target.closest('.item');
         parentItem.remove();
 
-        pubSub.publish(events.item_deleted, { itemId, parentId});
+        pubSub.publish(events.item_deleted, { itemId, type: "items" });
 
     });
 
 }
-
-console.log(project)
