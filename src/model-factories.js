@@ -1,11 +1,12 @@
 import { canBeCompleted, canHoldEntities, canBeUpdated, canPubSub } from "./model-behaviors.js";
 
-export const toDoItem = (title, parentID, due = null, desc = null, priority = "Low", notes = null) => {
+export const toDoItem = (title, parentId, due = null, desc = null, priority = "Low", notes = null) => {
 
     let state = {
-        id: crypto.randomUUID(),
+        id: '',
         type: "items",
-        parentID,
+        subtype: "subitems",
+        parentId,
         title,
         due,
         priority,
@@ -17,12 +18,13 @@ export const toDoItem = (title, parentID, due = null, desc = null, priority = "L
 
 }
 
-export const toDoList = (title, parentID, due = null, priority = "Low") => {
+export const toDoList = (title, parentId, due = null, priority = "Low") => {
 
     let state = {
-        id: crypto.randomUUID(),
+        id: '', 
         type: "lists",
-        parentID,
+        subtype: "items",
+        parentId,
         title,
         due,
         priority,
@@ -35,8 +37,9 @@ export const toDoList = (title, parentID, due = null, priority = "Low") => {
 export const toDoProject = () => {
 
     let state = {
-        id: crypto.randomUUID(),
+        id: '',
         type: "projects",
+        subtype: "lists",
     }
 
     return Object.assign(state);

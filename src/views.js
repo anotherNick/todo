@@ -94,12 +94,14 @@ export default class View {
             const itemContainer = document.createElement('ul');
                 itemContainer.className = "item-list";
 
+            if(list.entities !== undefined) {
 
-            for(const item of list['items']) {
+                list['entities'].forEach(item => {
 
-                const itemLi = this.itemView(item);
-                itemContainer.append(itemLi);
+                    const itemLi = this.itemView(item);
+                    itemContainer.append(itemLi);
 
+                });
             }
 
             const listDeleteBtn = document.createElement('button');
@@ -113,18 +115,19 @@ export default class View {
             return listDiv;
     }
 
-    renderLists(data) {
+    renderAll(data) {
         
-        const lists = JSON.parse(data);
-        const listContainer = document.querySelector('#container');
+        const toDoData = JSON.parse(data);
 
-        for(const list of lists['items']) {
+        toDoData.forEach(project => {
+            // Need to handle multi projects
+            const listContainer = document.querySelector('#container');
+            project.entities.forEach(list => {
 
-            const listDiv = this.listView(list);
-            listContainer.append(listDiv);
+                const listDiv = this.listView(list);
+                listContainer.append(listDiv);
 
-        }
-        
+            });
+        });
     }
-
 }

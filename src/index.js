@@ -9,14 +9,14 @@ const project = toDoProject();
 const pubSub = new EventBus();
 const date = format(new Date(), "PP");
 
-const newList = toDoList("default", container.id);
-const secondList = toDoList("not default", container.id, date);
-const thirdList = toDoList("an empty list", container.id);
+const newList = toDoList("default", 1);
+const secondList = toDoList("not default", 1, date);
+const thirdList = toDoList("an empty list", 1);
 
-const newItem = toDoItem("test item", newList.id);
-const secondItem = toDoItem('another test item', newList.id, date, 'test description', "Low", "test note");
-const thirdItem = toDoItem('third todo item', newList.id, date, 'third description', "Mediun", "third notes" );
-const fourthItem = toDoItem('fourth todo item', newList.id, date, 'fourth description', "High", "fourth notes" );
+const newItem = toDoItem("test item", 2);
+const secondItem = toDoItem('another test item', 2, date, 'test description', "Low", "test note");
+const thirdItem = toDoItem('third todo item', 2, date, 'third description', "Mediun", "third notes" );
+const fourthItem = toDoItem('fourth todo item', 3, date, 'fourth description', "High", "fourth notes" );
 
 ToDo.addEntity(project);
 ToDo.addEntity(newList);
@@ -27,10 +27,10 @@ ToDo.addEntity(secondItem);
 ToDo.addEntity(thirdItem);
 ToDo.addEntity(fourthItem);
 
-console.log(ToDo);
+ToDo.subscribe(pubSub, events.item_deleted, () => { console.log('the forever yeet') });
 
 const listView = new View();
-listView.renderLists(JSON.stringify(project));
+listView.renderAll(ToDo.exportData());
 
 const hamBtns = document.querySelectorAll('.item-collapse-button');
 for(const button of hamBtns) {
