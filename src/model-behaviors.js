@@ -1,24 +1,24 @@
-export const canHoldEntities = (state) => ({
-    projects: {},
-    lists: {},
-    items: {},
-    subitems: {},
-    relationships: [],
-    index: 0,
+export const dataManager = (state) => ({
 
-    addEntity: (newEntity) => {
-        
-        newEntity.id = state.getNewIndex();
-        state[newEntity.type][newEntity.id] = newEntity;
-        if(newEntity.parentId !== undefined) {
-            state.addRelationship(newEntity.id, newEntity.parentId);
+    addItem: (newItem) => {
+
+        newItem.id = state.index;
+        state.index++;
+        state[newItem.type][newItem.id] = newItem;
+
+        if(newItem.parentId !== undefined) {
+            if(state.relationships[newItem.parentId] === undefined){
+                state.relationships[newItem.parentId] = [];
+            }
+
+            state.relationships[newItem.parentId].push(newItem.id);
         }
 
     },
 
-    removeEntity: (details) => {
+    removeItem: (details) => {
 
-        const index = state[details.type].findIndex(entity => entity.id === details.id);
+        const index = state[details.type].findIndex(item => item.id === details.id);
 
         if(index !== -1) {
             state[details.type].splice(index, 1);
@@ -26,7 +26,7 @@ export const canHoldEntities = (state) => ({
 
     },
 
-    getEntity: (type, id) => {
+    getItem: (type, id) => {
         const index = state[type].findIndex(item => item.id === id);
 
         if(index !== -1){
@@ -34,61 +34,38 @@ export const canHoldEntities = (state) => ({
         }
     },
     
-    getEntities: (type) => {
+    getItems: (type) => {
         return state[type];
     },
 
-    getNewIndex: () => {
-        state.index++;
-        return state.index;
-    },
+    exportAll: () => {
 
-    addRelationship: (id, parentId) => {
+        const getItemsRecursively = (item, callback) => {
 
-        if(state.relationships[parentId] === undefined){
-            state.relationships[parentId] = [];
+            if(state.relationships[item.id] !== undefined) {
+
+                item.subItems = [];
+                state.relationships[item.id].forEach(relationship => {
+
+                    let subItem = state[item.subtype][relationship];
+                    item.subItems.push(callback(subItem, callback));
+
+                });
+
+            }
+
+            return item;
+
         }
-
-        state.relationships[parentId].push(id);
-
-    },
-
-    exportData: () => {
 
         const model = [];
 
-        Object.values(state.projects).forEach( project => {
+        Object.values(state.projects).forEach(project => {
 
-            if(state.relationships[project.id] !== undefined) {
+            model.push(getItemsRecursively(project, getItemsRecursively));
 
-                project.entities = [];     
-                state.relationships[project.id].forEach(listId => {
-
-                    const list = state.lists[listId];
-                    if(state.relationships[listId] !== undefined) {
-
-                        list.entities = [];
-                        state.relationships[listId].forEach(itemId => {
-
-                            const item = state.items[itemId];
-                            if(state.relationships[itemId] !== undefined) {
-
-                                item.entities = [];
-                                state.relationships[itemId].forEach(subitemId => {
-
-                                    const subitem = state.subitems[subitemId];
-                                    item.entities.push(subitem);
-
-                                });
-                           }
-                           list.entities.push(item); 
-                        });
-                    }
-                    project.entities.push(list);
-                });
-            }
-            model.push(project);
         });
+
         return JSON.stringify(model);
     },
 
@@ -115,22 +92,14 @@ export const canBeUpdated = (state) => ({
     
 });
 
-export const canBeNested = (state) => ({
+export const persister = (state) => ({
 
-
-
-});
-
-export const canBeReordered = (state) => ({
-
-
-
-});
-
-export const canPubSub = (state) => ({
-
-    unSubList: [],
+  
     
+});
+
+export const eventSubscriber = (state) => ({
+
     subscribe: (bus, event, callback) => {
         const unsubscribe = bus.subscribe(event, callback);
         state.unSubList.push(unsubscribe);

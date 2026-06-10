@@ -18,19 +18,19 @@ const secondItem = toDoItem('another test item', 2, date, 'test description', "L
 const thirdItem = toDoItem('third todo item', 2, date, 'third description', "Mediun", "third notes" );
 const fourthItem = toDoItem('fourth todo item', 3, date, 'fourth description', "High", "fourth notes" );
 
-ToDo.addEntity(project);
-ToDo.addEntity(newList);
-ToDo.addEntity(secondList);
-ToDo.addEntity(thirdList);
-ToDo.addEntity(newItem);
-ToDo.addEntity(secondItem);
-ToDo.addEntity(thirdItem);
-ToDo.addEntity(fourthItem);
+ToDo.addItem(project);
+ToDo.addItem(newList);
+ToDo.addItem(secondList);
+ToDo.addItem(thirdList);
+ToDo.addItem(newItem);
+ToDo.addItem(secondItem);
+ToDo.addItem(thirdItem);
+ToDo.addItem(fourthItem);
 
 ToDo.subscribe(pubSub, events.item_deleted, () => { console.log('the forever yeet') });
 
 const listView = new View();
-listView.renderAll(ToDo.exportData());
+listView.renderAll(ToDo.exportAll());
 
 const hamBtns = document.querySelectorAll('.item-collapse-button');
 for(const button of hamBtns) {

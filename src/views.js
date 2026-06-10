@@ -94,9 +94,9 @@ export default class View {
             const itemContainer = document.createElement('ul');
                 itemContainer.className = "item-list";
 
-            if(list.entities !== undefined) {
+            if(list.subItems !== undefined) {
 
-                list['entities'].forEach(item => {
+                list.subItems.forEach(item => {
 
                     const itemLi = this.itemView(item);
                     itemContainer.append(itemLi);
@@ -116,13 +116,13 @@ export default class View {
     }
 
     renderAll(data) {
-        
+   
         const toDoData = JSON.parse(data);
 
         toDoData.forEach(project => {
             // Need to handle multi projects
             const listContainer = document.querySelector('#container');
-            project.entities.forEach(list => {
+            project.subItems.forEach(list => {
 
                 const listDiv = this.listView(list);
                 listContainer.append(listDiv);

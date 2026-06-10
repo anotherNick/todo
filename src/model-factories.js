@@ -1,4 +1,4 @@
-import { canBeCompleted, canHoldEntities, canBeUpdated, canPubSub } from "./model-behaviors.js";
+import { canBeCompleted, dataManager, canBeUpdated, eventSubscriber, persister } from "./model-behaviors.js";
 
 export const toDoItem = (title, parentId, due = null, desc = null, priority = "Low", notes = null) => {
 
@@ -48,8 +48,17 @@ export const toDoProject = () => {
 
 export const toDoSystem = () => {
 
-    let state = {}
+    let state = {
+        projects: {},
+        lists: {},
+        items: {},
+        subitems: {},
+        relationships: {},
+        unSubList: [],
+        index: 1,
+    }
+
     
-    return Object.assign(state, canHoldEntities(state), canPubSub(state));
+    return Object.assign({}, dataManager(state), eventSubscriber(state), persister(state));
 
 }
