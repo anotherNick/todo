@@ -18,11 +18,43 @@ export const dataManager = (state) => ({
 
     removeItem: (details) => {
 
-        const index = state[details.type].findIndex(item => item.id === details.id);
+        const deleteItemsRecursively = (item, callback) => {
+          
+            const relationships = state.relationships[item.id];
 
-        if(index !== -1) {
-            state[details.type].splice(index, 1);
+            if(relationships){
+
+                relationships.forEach(relationship => {
+
+                    const subItem = state[item.subtype][relationship];
+                    callback(subItem, callback);
+
+                });                
+
+            }
+
+            // Delete this item
+            const result = delete state[item.type][item.id];
+
+            if(result){
+                // Delete relationships for this item
+                delete state.relationships[item.id];
+                
+                const index = state.relationships[item.parentId].indexOf(item.id);
+                if(index !== -1){
+                    // Delete the relationship of this item with its parent
+                    delete state.relationships[item.parentId][index];
+                }
+            }
+
+            return result;
+
         }
+
+        const item = state[details.type][details.id];
+        const result = deleteItemsRecursively(item, deleteItemsRecursively);
+       
+        return result;
 
     },
 
@@ -107,7 +139,7 @@ export const persister = (state) => ({
             localStorage.setItem('toDoData', data);
             return true;
 
-        } catch () {
+        } catch (e) {
 
             return false;
 

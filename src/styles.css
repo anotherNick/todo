@@ -36,7 +36,7 @@ ul {
 
 }
 
-.list {
+.lists {
 
     background-color: var(--primary-mid-light);
     border: 2px solid var(--primary-dark);
@@ -65,7 +65,7 @@ ul {
 
 }
 
-.list-delete-button {
+.lists .delete-button {
 
     padding: 5px;
     background-color: var(--primary-light);
@@ -99,7 +99,7 @@ ul {
 
 }
 
-.item {
+.items {
 
     display: flex;
     flex-flow: column;
@@ -157,7 +157,7 @@ ul {
 
 }
 
-.item-delete-button {
+.items .delete-button {
 
     background-color: var(--primary-mid-dark);
     margin-top: 16px;

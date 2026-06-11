@@ -1,6 +1,4 @@
 export const events = {
-    project_deleted: "todo:project_deleted",
-    list_deleted: "todo:list_deleted",
     item_deleted: "todo:item_deleted",
     sub_item_deleted: "todo:sub_item_deleted",
 }

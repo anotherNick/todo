@@ -27,52 +27,15 @@ ToDo.addItem(secondItem);
 ToDo.addItem(thirdItem);
 ToDo.addItem(fourthItem);
 
-ToDo.subscribe(pubSub, events.item_deleted, () => { console.log('the forever yeet') });
+ToDo.subscribe(pubSub, events.item_deleted, (e) => { 
+
+    ToDo.removeItem(e);
+
+});
+
+
+
 const toDoData = ToDo.exportAll();
-ToDo.saveData(toDoData);
-const loadedData = ToDo.loadData();
 
-const listView = new View();
-listView.renderAll(loadedData);
-
-const hamBtns = document.querySelectorAll('.item-collapse-button');
-for(const button of hamBtns) {
-
-    button.addEventListener('click', (e) => {
-
-        const parentLi = e.target.closest('li');
-        parentLi.querySelector('.item-body').classList.toggle('hidden');
-
-    });
-    
-}
-
-const listDeleteBtns = document.querySelectorAll('.list-delete-button');
-for(const button of listDeleteBtns) {
-
-    button.addEventListener('click', (e) => {
-
-        const listId = e.target.value;
-        const parentDiv = e.target.closest('.list');
-        project.removeItem(listId);
-        parentDiv.remove();
-
-    });
-
-}
-
-const itemDeleteBtns = document.querySelectorAll('.item-delete-button');
-for(const button of itemDeleteBtns) {
-
-    button.addEventListener('click', (e) => {
-
-        const itemId = e.target.value;
-        const parentId = e.target.dataset.parentId;
-        const parentItem = e.target.closest('.item');
-        parentItem.remove();
-
-        pubSub.publish(events.item_deleted, { itemId, type: "items" });
-
-    });
-
-}
+const listView = new View({ pubSub, events });
+listView.renderAll(toDoData);

@@ -1,5 +1,17 @@
 export default class View {
 
+    constructor(eventHandler) {
+        this.eventHandler = eventHandler;
+    }
+
+    get eventBus() {
+        return this.eventHandler.pubSub;
+    }
+
+    get eventList() {
+        return this.eventHandler.events;
+    }
+    
     getDate(date) {
 
         return date ? date : "N/A";
@@ -10,7 +22,7 @@ export default class View {
 
         const itemLi = document.createElement('li');
             itemLi.dataset.itemId = item.id;
-            itemLi.classList.add('item', `priority-${item.priority.toLowerCase()}`);
+            itemLi.classList.add(item.type, `priority-${item.priority.toLowerCase()}`);
 
             const itemHeader = document.createElement('div');
                 itemHeader.className = "item-header";
@@ -20,6 +32,10 @@ export default class View {
                 const itemHamBtn = document.createElement('button');
                     itemHamBtn.className = "item-collapse-button";
                     itemHamBtn.textContent = "\u2261";
+                    itemHamBtn.addEventListener('click', (e) => {
+                        const parentLi = e.target.closest('li');
+                        parentLi.querySelector('.item-body').classList.toggle('hidden');
+                    });
             itemHeader.append(itemTitle);
             itemHeader.append(itemHamBtn);
 
@@ -42,8 +58,21 @@ export default class View {
                 const itemDeleteBtn = document.createElement('button');
                     itemDeleteBtn.value = item.id;
                     itemDeleteBtn.textContent = 'Delete Item';
-                    itemDeleteBtn.className = 'item-delete-button';
-                    itemDeleteBtn.dataset.parentId = item.parentID;
+                    itemDeleteBtn.className = 'delete-button';
+                    itemDeleteBtn.dataset.parentId = item.parentId;
+                    itemDeleteBtn.dataset.type = item.type;
+                    itemDeleteBtn.addEventListener('click', (e) => {
+                        const id = e.target.value;
+                        const parentId = e.target.dataset.parentId;
+                        const type = e.target.dataset.type;
+                        const parentDiv = e.target.closest('.' + type);
+                        
+                        if(parentDiv) {
+                            parentDiv.remove();
+                        }
+
+                        this.eventBus.publish(this.eventList.item_deleted, { id, type, parentId });
+                    });
             itemBodyHeader.append(itemDue);
             itemBodyHeader.append(itemPriority);
             itemBody.append(itemBodyHeader);
@@ -61,7 +90,7 @@ export default class View {
 
             const listDiv = document.createElement('div');
                 listDiv.dataset.listId = list.id;
-                listDiv.classList.add('list', `priority-${list.priority.toLowerCase()}`);
+                listDiv.classList.add(list.type, `priority-${list.priority.toLowerCase()}`);
 
                 const listHeader = document.createElement('div');
                     listHeader.className = 'list-header';
@@ -107,7 +136,21 @@ export default class View {
             const listDeleteBtn = document.createElement('button');
                 listDeleteBtn.value = list.id;
                 listDeleteBtn.textContent = 'Delete List'
-                listDeleteBtn.className = 'list-delete-button';
+                listDeleteBtn.className = 'delete-button';
+                listDeleteBtn.dataset.parentId = list.parentId;
+                listDeleteBtn.dataset.type = list.type;
+                listDeleteBtn.addEventListener('click', (e) => {
+                    const id = e.target.value;
+                    const parentId = e.target.dataset.parentId;
+                    const type = e.target.dataset.type;
+                    const parentDiv = e.target.closest('.' + type);
+                    
+                    if(parentDiv) {
+                        parentDiv.remove();
+                    }
+
+                    this.eventBus.publish(this.eventList.item_deleted, { id, type, parentId });
+                });
             
             listDiv.append(itemContainer);
             listDiv.append(listDeleteBtn);
