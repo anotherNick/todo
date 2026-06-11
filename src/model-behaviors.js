@@ -94,6 +94,26 @@ export const canBeUpdated = (state) => ({
 
 export const persister = (state) => ({
 
+    loadData: () => {
+
+        return localStorage.getItem('toDoData');
+
+    },
+
+    saveData: (data) => {
+
+        try {
+
+            localStorage.setItem('toDoData', data);
+            return true;
+
+        } catch () {
+
+            return false;
+
+        }
+
+    }, 
   
     
 });

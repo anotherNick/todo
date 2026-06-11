@@ -28,9 +28,12 @@ ToDo.addItem(thirdItem);
 ToDo.addItem(fourthItem);
 
 ToDo.subscribe(pubSub, events.item_deleted, () => { console.log('the forever yeet') });
+const toDoData = ToDo.exportAll();
+ToDo.saveData(toDoData);
+const loadedData = ToDo.loadData();
 
 const listView = new View();
-listView.renderAll(ToDo.exportAll());
+listView.renderAll(loadedData);
 
 const hamBtns = document.querySelectorAll('.item-collapse-button');
 for(const button of hamBtns) {
