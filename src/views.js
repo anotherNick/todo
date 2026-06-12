@@ -2,6 +2,7 @@ export default class View {
 
     constructor(eventHandler) {
         this.eventHandler = eventHandler;
+        this.activeProject = null;
     }
 
     get eventBus() {
@@ -160,7 +161,58 @@ export default class View {
 
     projectView(project) {
 
+        const projectContainer = document.querySelector('#container');
+        const listContainer = document.createElement('div');
+            listContainer.id = `project-${project.id}-container`;
+            listContainer.classList.add('list-container', 'hidden');
+            listContainer.dataset.projectId = project.id;
+        const deleteProjectBtn = document.createElement('button');
+            deleteProjectBtn.id = "delete-project";
+            deleteProjectBtn.textContent = "Delete This Project";
+        listContainer.append(deleteProjectBtn);
+        const newListBtn = document.createElement('button');
+            newListBtn.id = "new-list";
+            newListBtn.textContent = "+New List";
+        listContainer.append(newListBtn);
         
+        if(project.subItems !== undefined) {
+            project.subItems.forEach(list => {
+
+                const listDiv = this.listView(list);
+                listContainer.append(listDiv);
+
+            });
+        }
+
+        projectContainer.append(listContainer);
+    }
+
+    updateActiveProject(id) {
+        const buttons = document.querySelectorAll('.project-buttons');
+        buttons.forEach(button => {
+
+            const buttonId = button.dataset.projectId;
+
+            if(buttonId == id){
+                button.classList.add('active-project');
+            }else{
+                button.classList.remove('active-project');
+            }
+
+        });
+
+        const projects = document.querySelectorAll('.list-container');
+        projects.forEach(project => {
+
+            const projectId = project.dataset.projectId;
+
+            if(projectId == id){
+                project.classList.remove('hidden');
+            }else{
+                project.classList.add('hidden');
+            }
+
+        });
 
     }
 
@@ -168,26 +220,24 @@ export default class View {
    
         const toDoData = JSON.parse(data);
         const projectTabs = document.querySelector('#projects');
-        const listContainer = document.querySelector('#container');
-        
+
         toDoData.forEach(project => {
             const projectBtn = document.createElement('button');
                 projectBtn.textContent = project.title;
-            projectTabs.append(projectBtn)
-            
-            if(project.subItems !== undefined) {
-                project.subItems.forEach(list => {
+                projectBtn.id = `project-${project.id}-button`;
+                projectBtn.dataset.projectId = project.id;
+                projectBtn.classList.add('project-buttons');
+                projectBtn.addEventListener('click', (e) =>{
+                    this.updateActiveProject(e.target.dataset.projectId);
+                })
+            projectTabs.append(projectBtn);
 
-                    const listDiv = this.listView(list);
-                    listContainer.append(listDiv);
+            this.projectView(project);
 
-                });
+            this.activeProject ??= project.id;
+            if(this.activeProject == project.id){
+                this.updateActiveProject(project.id);
             }
-
-            const newListBtn = document.createElement('button');
-                newListBtn.id = "new-list";
-                newListBtn.textContent = "+New List";
-            listContainer.append(newListBtn);
         }); // How do we get lists + new list button on their own pages? Delete this project?
         
         const newProjectBtn = document.createElement('button');

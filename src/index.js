@@ -41,3 +41,6 @@ const toDoData = ToDo.exportAll();
 
 const listView = new View({ pubSub, events });
 listView.renderAll(toDoData);
+
+ToDo.saveState();
+ToDo.loadState();

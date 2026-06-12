@@ -1,6 +1,7 @@
 export const events = {
     item_deleted: "todo:item_deleted",
     sub_item_deleted: "todo:sub_item_deleted",
+    change_active_project: "todo:change_active_project",
 }
 
 export class EventBus extends EventTarget {

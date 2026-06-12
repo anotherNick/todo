@@ -135,17 +135,37 @@ export const persister = (state) => ({
     saveData: (data) => {
 
         try {
-
             localStorage.setItem('toDoData', data);
             return true;
-
         } catch (e) {
-
             return false;
-
         }
 
-    }, 
+    },
+
+    saveState: () => {
+
+        const toDoState = {};
+
+        Object.entries(state).forEach(property => {
+            toDoState[property[0]] = property[1];
+        });
+            try {
+                localStorage.setItem('toDoState', JSON.stringify(toDoState));
+            } catch (e) {
+                return false;
+            }
+    },
+
+    loadState: () => {
+        
+        Object.entries(JSON.parse(localStorage.getItem('toDoState'))).forEach(property => {
+
+            state[property[0]] = property[1];
+
+        });
+
+    }
   
     
 });
