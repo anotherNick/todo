@@ -162,17 +162,50 @@ export default class View {
     projectView(project) {
 
         const projectContainer = document.querySelector('#container');
+
         const listContainer = document.createElement('div');
             listContainer.id = `project-${project.id}-container`;
             listContainer.classList.add('list-container', 'hidden');
             listContainer.dataset.projectId = project.id;
-        const deleteProjectBtn = document.createElement('button');
+        
+            const deleteProjectBtn = document.createElement('button');
             deleteProjectBtn.id = "delete-project";
             deleteProjectBtn.textContent = "Delete This Project";
+            deleteProjectBtn.value = project.id;
+            deleteProjectBtn.classList.add('delete-button');
+            deleteProjectBtn.dataset.parentId = project.parentId;
+            deleteProjectBtn.dataset.type = project.type;
+            deleteProjectBtn.addEventListener('click', (e) => {
+                const id = e.target.value;
+                const parentId = e.target.dataset.parentId;
+                const type = e.target.dataset.type;
+                const parentDiv = e.target.closest('.list-container');
+                
+                if(parentDiv) {
+                    parentDiv.remove();
+                }
+
+                const projectBtn = document.querySelector(`#project-${id}-button`);
+
+                if(projectBtn) {
+                    projectBtn.remove();
+                }
+
+                const nextProjectBtn = document.querySelector('.project-buttons');
+
+                if(nextProjectBtn) {
+                    this.updateActiveProject(nextProjectBtn.dataset.projectId);
+                }
+
+                this.eventBus.publish(this.eventList.item_deleted, { id, type, parentId });
+            });
+        
         listContainer.append(deleteProjectBtn);
-        const newListBtn = document.createElement('button');
+        
+            const newListBtn = document.createElement('button');
             newListBtn.id = "new-list";
             newListBtn.textContent = "+New List";
+        
         listContainer.append(newListBtn);
         
         if(project.subItems !== undefined) {

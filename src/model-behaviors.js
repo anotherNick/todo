@@ -40,10 +40,12 @@ export const dataManager = (state) => ({
                 // Delete relationships for this item
                 delete state.relationships[item.id];
                 
-                const index = state.relationships[item.parentId].indexOf(item.id);
-                if(index !== -1){
-                    // Delete the relationship of this item with its parent
-                    delete state.relationships[item.parentId][index];
+                if(item.parentId) {
+                    const index = state.relationships[item.parentId].indexOf(item.id);
+                    if(index !== -1){
+                        // Delete the relationship of this item with its parent
+                        delete state.relationships[item.parentId][index];
+                    }
                 }
             }
 
@@ -53,7 +55,7 @@ export const dataManager = (state) => ({
 
         const item = state[details.type][details.id];
         const result = deleteItemsRecursively(item, deleteItemsRecursively);
-       
+
         return result;
 
     },
@@ -126,23 +128,6 @@ export const canBeUpdated = (state) => ({
 
 export const persister = (state) => ({
 
-    loadData: () => {
-
-        return localStorage.getItem('toDoData');
-
-    },
-
-    saveData: (data) => {
-
-        try {
-            localStorage.setItem('toDoData', data);
-            return true;
-        } catch (e) {
-            return false;
-        }
-
-    },
-
     saveState: () => {
 
         const toDoState = {};
@@ -152,6 +137,7 @@ export const persister = (state) => ({
         });
             try {
                 localStorage.setItem('toDoState', JSON.stringify(toDoState));
+                return true;
             } catch (e) {
                 return false;
             }
@@ -159,32 +145,30 @@ export const persister = (state) => ({
 
     loadState: () => {
         
-        Object.entries(JSON.parse(localStorage.getItem('toDoState'))).forEach(property => {
+        const toDoState = localStorage.getItem('toDoState');
+        
+        if(toDoState) { 
+            Object.entries(JSON.parse(toDoState)).forEach(property => {
+                state[property[0]] = property[1];
+            });
+            return true;
+        }
 
-            state[property[0]] = property[1];
-
-        });
-
-    }
-  
-    
+        return false;
+    },
 });
 
 export const eventSubscriber = (state) => ({
 
     subscribe: (bus, event, callback) => {
         const unsubscribe = bus.subscribe(event, callback);
-        state.unSubList.push(unsubscribe);
+        //state.unSubList.push(unsubscribe);
     },
 
     unsubscribeAll: () => {
-        state.unSubList.forEach(fn => {
-
-            fn();
-
-        });
         
         state.unSubList = [];
+    
     },
 
 });

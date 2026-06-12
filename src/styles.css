@@ -52,16 +52,20 @@ nav button {
 
 }
 
+#container {
 
-.list-container {
-
-    display: flex;
-    align-items: flex-start;
     background-color: var(--primary-mid);
     border-top: 2px solid var(--primary-light);
     padding-top: 32px;
     height: 100vh;
     box-shadow: 0 -5px 10px var(--primary-mid-dark);
+
+}
+
+.list-container {
+
+    display: flex;
+    align-items: flex-start;
 
 }
 
