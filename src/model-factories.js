@@ -34,12 +34,13 @@ export const toDoList = (title, parentId, due = null, priority = "Low") => {
 
 }
 
-export const toDoProject = () => {
+export const toDoProject = (title) => {
 
     let state = {
         id: '',
         type: "projects",
         subtype: "lists",
+        title,
     }
 
     return Object.assign(state);

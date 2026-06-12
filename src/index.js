@@ -5,7 +5,8 @@ import { events, EventBus } from "./controller.js";
 import { format } from "date-fns";
 
 const ToDo = toDoSystem();
-const project = toDoProject();
+const project = toDoProject('Default Project');
+const secondProject = toDoProject('Another Project');
 const pubSub = new EventBus();
 const date = format(new Date(), "PP");
 
@@ -13,12 +14,13 @@ const newList = toDoList("default", 1);
 const secondList = toDoList("not default", 1, date);
 const thirdList = toDoList("an empty list", 1);
 
-const newItem = toDoItem("test item", 2);
-const secondItem = toDoItem('another test item', 2, date, 'test description', "Low", "test note");
-const thirdItem = toDoItem('third todo item', 2, date, 'third description', "Mediun", "third notes" );
-const fourthItem = toDoItem('fourth todo item', 3, date, 'fourth description', "High", "fourth notes" );
+const newItem = toDoItem("test item", 3);
+const secondItem = toDoItem('another test item', 3, date, 'test description', "Low", "test note");
+const thirdItem = toDoItem('third todo item', 3, date, 'third description', "Mediun", "third notes" );
+const fourthItem = toDoItem('fourth todo item', 4, date, 'fourth description', "High", "fourth notes" );
 
 ToDo.addItem(project);
+ToDo.addItem(secondProject);
 ToDo.addItem(newList);
 ToDo.addItem(secondList);
 ToDo.addItem(thirdList);

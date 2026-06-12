@@ -158,19 +158,41 @@ export default class View {
             return listDiv;
     }
 
+    projectView(project) {
+
+        
+
+    }
+
     renderAll(data) {
    
         const toDoData = JSON.parse(data);
-
+        const projectTabs = document.querySelector('#projects');
+        const listContainer = document.querySelector('#container');
+        
         toDoData.forEach(project => {
-            // Need to handle multi projects
-            const listContainer = document.querySelector('#container');
-            project.subItems.forEach(list => {
+            const projectBtn = document.createElement('button');
+                projectBtn.textContent = project.title;
+            projectTabs.append(projectBtn)
+            
+            if(project.subItems !== undefined) {
+                project.subItems.forEach(list => {
 
-                const listDiv = this.listView(list);
-                listContainer.append(listDiv);
+                    const listDiv = this.listView(list);
+                    listContainer.append(listDiv);
 
-            });
-        });
+                });
+            }
+
+            const newListBtn = document.createElement('button');
+                newListBtn.id = "new-list";
+                newListBtn.textContent = "+New List";
+            listContainer.append(newListBtn);
+        }); // How do we get lists + new list button on their own pages? Delete this project?
+        
+        const newProjectBtn = document.createElement('button');
+            newProjectBtn.textContent = "+New Project";
+            newProjectBtn.id = "new-project";
+        projectTabs.append(newProjectBtn);
     }
 }
