@@ -4,8 +4,8 @@ export const toDoItem = (title, parentId, due = null, desc = null, priority = "L
 
     let state = {
         id: '',
-        type: "items",
-        subtype: "subitems",
+        type: "item",
+        subtype: "subitem",
         parentId,
         title,
         due,
@@ -22,8 +22,8 @@ export const toDoList = (title, parentId, due = null, priority = "Low") => {
 
     let state = {
         id: '', 
-        type: "lists",
-        subtype: "items",
+        type: "list",
+        subtype: "item",
         parentId,
         title,
         due,
@@ -38,8 +38,8 @@ export const toDoProject = (title) => {
 
     let state = {
         id: '',
-        type: "projects",
-        subtype: "lists",
+        type: "project",
+        subtype: "list",
         title,
     }
 
@@ -50,10 +50,10 @@ export const toDoProject = (title) => {
 export const toDoSystem = () => {
 
     let state = {
-        projects: {},
-        lists: {},
-        items: {},
-        subitems: {},
+        project: {},
+        list: {},
+        item: {},
+        subitem: {},
         relationships: {},
         unSubList: [],
         index: 1,

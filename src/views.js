@@ -27,6 +27,12 @@ export default class View {
 
             const itemHeader = document.createElement('div');
                 itemHeader.className = "item-header";
+                const itemCheckbox = document.createElement('input');
+                    itemCheckbox.type = 'checkbox';
+                    itemCheckbox.className = "item-complete";
+                const itemEditBtn = document.createElement('button');
+                    itemEditBtn.className = "item-header-button";
+                    itemEditBtn.textContent = "\u270E";
                 const itemTitle = document.createElement('span');
                     itemTitle.className = "item-title";
                     itemTitle.textContent = item.title;
@@ -37,7 +43,9 @@ export default class View {
                         const parentLi = e.target.closest('li');
                         parentLi.querySelector('.item-body').classList.toggle('hidden');
                     });
+            itemHeader.append(itemCheckbox);
             itemHeader.append(itemTitle);
+            itemHeader.append(itemEditBtn);
             itemHeader.append(itemHamBtn);
 
             const itemBody = document.createElement('div')
@@ -95,10 +103,18 @@ export default class View {
 
                 const listHeader = document.createElement('div');
                     listHeader.className = 'list-header';
+                    const listCheckbox = document.createElement('input');
+                        listCheckbox.type = 'checkbox';
+                        listCheckbox.className = "list-complete";
+                    const listHeaderBtn = document.createElement('button');
+                        listHeaderBtn.className = "list-header-button";
+                        listHeaderBtn.textContent = "\u270E";
                     const listTitle = document.createElement('span');
                         listTitle.className = "list-title";
                         listTitle.textContent = list.title;
+                listHeader.append(listCheckbox);
                 listHeader.append(listTitle);
+                listHeader.append(listHeaderBtn);
 
                 const listBody = document.createElement('div')
                     listBody.className = "list-body";
@@ -152,7 +168,11 @@ export default class View {
 
                     this.eventBus.publish(this.eventList.item_deleted, { id, type, parentId });
                 });
-            
+            const newItemBtn = document.createElement('button');
+                newItemBtn.textContent = "+New Item";
+                newItemBtn.className = "new-item";
+
+            listDiv.append(newItemBtn);
             listDiv.append(itemContainer);
             listDiv.append(listDeleteBtn);
 
@@ -167,46 +187,56 @@ export default class View {
             listContainer.id = `project-${project.id}-container`;
             listContainer.classList.add('list-container', 'hidden');
             listContainer.dataset.projectId = project.id;
+
+            const projectHeaderBtns = document.createElement('div');
+                projectHeaderBtns.classList.add('project-header-buttons');
         
-            const deleteProjectBtn = document.createElement('button');
-            deleteProjectBtn.id = "delete-project";
-            deleteProjectBtn.textContent = "Delete This Project";
-            deleteProjectBtn.value = project.id;
-            deleteProjectBtn.classList.add('delete-button');
-            deleteProjectBtn.dataset.parentId = project.parentId;
-            deleteProjectBtn.dataset.type = project.type;
-            deleteProjectBtn.addEventListener('click', (e) => {
-                const id = e.target.value;
-                const parentId = e.target.dataset.parentId;
-                const type = e.target.dataset.type;
-                const parentDiv = e.target.closest('.list-container');
-                
-                if(parentDiv) {
-                    parentDiv.remove();
-                }
+                const deleteProjectBtn = document.createElement('button');
+                deleteProjectBtn.id = "delete-project";
+                deleteProjectBtn.textContent = "Delete This Project";
+                deleteProjectBtn.value = project.id;
+                deleteProjectBtn.classList.add('delete-button');
+                deleteProjectBtn.dataset.parentId = project.parentId;
+                deleteProjectBtn.dataset.type = project.type;
+                deleteProjectBtn.addEventListener('click', (e) => {
+                    const id = e.target.value;
+                    const parentId = e.target.dataset.parentId;
+                    const type = e.target.dataset.type;
+                    const parentDiv = e.target.closest('.list-container');
+                    
+                    if(parentDiv) {
+                        parentDiv.remove();
+                    }
 
-                const projectBtn = document.querySelector(`#project-${id}-button`);
+                    const projectBtn = document.querySelector(`#project-${id}-button`);
 
-                if(projectBtn) {
-                    projectBtn.remove();
-                }
+                    if(projectBtn) {
+                        projectBtn.remove();
+                    }
 
-                const nextProjectBtn = document.querySelector('.project-buttons');
+                    const nextProjectBtn = document.querySelector('.project-buttons');
 
-                if(nextProjectBtn) {
-                    this.updateActiveProject(nextProjectBtn.dataset.projectId);
-                }
+                    if(nextProjectBtn) {
+                        this.updateActiveProject(nextProjectBtn.dataset.projectId);
+                    }
 
-                this.eventBus.publish(this.eventList.item_deleted, { id, type, parentId });
-            });
+                    this.eventBus.publish(this.eventList.item_deleted, { id, type, parentId });
+                });
         
-        listContainer.append(deleteProjectBtn);
         
             const newListBtn = document.createElement('button');
             newListBtn.id = "new-list";
             newListBtn.textContent = "+New List";
+            newListBtn.addEventListener('click', (e) => {
+
+               const formModal = document.getElementById('form-modal');
+                formModal.showModal();
+
+            });
         
-        listContainer.append(newListBtn);
+        projectHeaderBtns.append(deleteProjectBtn);
+        projectHeaderBtns.append(newListBtn);
+        listContainer.append(projectHeaderBtns);
         
         if(project.subItems !== undefined) {
             project.subItems.forEach(list => {
@@ -271,7 +301,7 @@ export default class View {
             if(this.activeProject == project.id){
                 this.updateActiveProject(project.id);
             }
-        }); // How do we get lists + new list button on their own pages? Delete this project?
+        });
         
         const newProjectBtn = document.createElement('button');
             newProjectBtn.textContent = "+New Project";

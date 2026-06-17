@@ -12,5 +12,44 @@
     <div id="container">
 
     </div>
+    <dialog id="form-modal">
+        <h2 id="form-title">New Item</h2>
+        <form method="dialog" id="new-item-form">
+            <input type="hidden" name="id">
+            <input type="hidden" name="type">
+            <input type="hidden" name="subtype">
+            <label for="title" id="title-input-label">Item Name:</label>
+            <input type="text" id="title" name="title">
+            
+            <fieldset class="list-fields item-fields subitem-fields">
+                <input type="hidden" name="parent-id">
+                <fieldset class="list-fields item-fields subitem-fields radio">
+                    <legend>
+                        Priority Level:
+                    </legend>
+                    <div class="radio-item">
+                        <input type="radio" id="low" name="priority" value="Low" checked>
+                        <label for="low">Low</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="medium" name="priority" value="Medium">
+                        <label for="medium">Medium</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="high" name="priority" value="High">
+                        <label for="High">High</label>
+                    </div>
+                </fieldset>
+                <label for="due">Due Date (optional):</label>
+                <input type="datetime-local" id="due" name="due">
+            </fieldset>
+            <fieldset class="item-fields subitem-fields">
+                <label for="desc">Description (optional):</label>
+                <input type="text" id="desc" name="desc">
+                <label for="notes">Additional Notes (optional):</label>
+                <input type="text" id="notes" name="notes">
+            </fieldset>
+        </form>
+    </dialog>
 </body>
 </html>
