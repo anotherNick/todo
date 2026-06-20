@@ -33,6 +33,40 @@ export default class View {
                 const itemEditBtn = document.createElement('button');
                     itemEditBtn.className = "item-header-button";
                     itemEditBtn.textContent = "\u270E";
+                    itemEditBtn.addEventListener('click', (e) => {
+
+                        const formTitle = document.getElementById('form-title');
+                            formTitle.textContent =  `Update ${item.type.charAt(0).toUpperCase()}${item.type.slice(1)}`;
+                        const itemFields = document.querySelectorAll('.item-fields');
+                            itemFields.forEach(fieldset => {
+
+                            fieldset.classList.add('hidden');
+                            fieldset.disabled = true;
+
+                        });
+
+                        const fieldType = `.${item.type}-fields`;
+                        const validFields = document.querySelectorAll(fieldType);
+                            validFields.forEach(fieldset => {
+
+                                fieldset.classList.remove('hidden');
+                                fieldset.disabled = false;
+
+                            });
+
+                        Object.entries(item).forEach(property => {
+
+                            const input = document.querySelector(`input[name="${property[0]}"]`);
+                            if(input !== null) {
+                                input.value = property[1];
+                            }
+
+                        });
+
+                        const formModal = document.getElementById('form-modal');
+                            formModal.showModal();
+
+                    });
                 const itemTitle = document.createElement('span');
                     itemTitle.className = "item-title";
                     itemTitle.textContent = item.title;
@@ -80,7 +114,7 @@ export default class View {
                             parentDiv.remove();
                         }
 
-                        this.eventBus.publish(this.eventList.item_deleted, { id, type, parentId });
+                        this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
                     });
             itemBodyHeader.append(itemDue);
             itemBodyHeader.append(itemPriority);
@@ -106,15 +140,49 @@ export default class View {
                     const listCheckbox = document.createElement('input');
                         listCheckbox.type = 'checkbox';
                         listCheckbox.className = "list-complete";
-                    const listHeaderBtn = document.createElement('button');
-                        listHeaderBtn.className = "list-header-button";
-                        listHeaderBtn.textContent = "\u270E";
+                    const editListBtn = document.createElement('button');
+                        editListBtn.className = "list-header-button";
+                        editListBtn.textContent = "\u270E";
+                        editListBtn.addEventListener('click', (e) => {
+
+                            const formTitle = document.getElementById('form-title');
+                                formTitle.textContent =  `Update ${list.type.charAt(0).toUpperCase()}${list.type.slice(1)}`;
+                            const itemFields = document.querySelectorAll('.item-fields');
+                            itemFields.forEach(fieldset => {
+
+                                fieldset.classList.add('hidden');
+                                fieldset.disabled = true;
+
+                            });
+
+                            const fieldType = `.${list.type}-fields`;
+                            const validFields = document.querySelectorAll(fieldType);
+                                validFields.forEach(fieldset => {
+
+                                    fieldset.classList.remove('hidden');
+                                    fieldset.disabled = false;
+
+                                });
+
+                            Object.entries(list).forEach(property => {
+
+                                const input = document.querySelector(`input[name="${property[0]}"]`);
+                                if(input !== null) {
+                                    input.value = property[1];
+                                }
+
+                            });
+
+                            const formModal = document.getElementById('form-modal');
+                                formModal.showModal();
+
+                        });
                     const listTitle = document.createElement('span');
                         listTitle.className = "list-title";
                         listTitle.textContent = list.title;
                 listHeader.append(listCheckbox);
                 listHeader.append(listTitle);
-                listHeader.append(listHeaderBtn);
+                listHeader.append(editListBtn);
 
                 const listBody = document.createElement('div')
                     listBody.className = "list-body";
@@ -166,7 +234,7 @@ export default class View {
                         parentDiv.remove();
                     }
 
-                    this.eventBus.publish(this.eventList.item_deleted, { id, type, parentId });
+                    this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
                 });
             const newItemBtn = document.createElement('button');
                 newItemBtn.textContent = "+New Item";
@@ -220,7 +288,7 @@ export default class View {
                         this.updateActiveProject(nextProjectBtn.dataset.projectId);
                     }
 
-                    this.eventBus.publish(this.eventList.item_deleted, { id, type, parentId });
+                    this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
                 });
         
         
@@ -229,8 +297,10 @@ export default class View {
             newListBtn.textContent = "+New List";
             newListBtn.addEventListener('click', (e) => {
 
-               const formModal = document.getElementById('form-modal');
-                formModal.showModal();
+                const formTitle = document.getElementById('form-title');
+                    formTitle.textContent = "New List";
+                const formModal = document.getElementById('form-modal');
+                    formModal.showModal();
 
             });
         
@@ -283,6 +353,9 @@ export default class View {
    
         const toDoData = JSON.parse(data);
         const projectTabs = document.querySelector('#projects');
+            projectTabs.textContent = "";
+        const projectContainer = document.querySelector('#container');
+            projectContainer.textContent = "";
 
         toDoData.forEach(project => {
             const projectBtn = document.createElement('button');

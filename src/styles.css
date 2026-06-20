@@ -30,6 +30,16 @@ ul {
 
 }
 
+#load-save-buttons {
+
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-right: 16px;
+    margin-top: 16px;
+
+}
+
 nav button {
 
     margin: 0 4px;
@@ -82,7 +92,7 @@ nav button {
 
 }
 
-.project-header-buttons button {
+.project-header-buttons button, #load-save-buttons button {
 
     padding: 5px;
     background-color: var(--primary-mid-dark);
@@ -93,7 +103,7 @@ nav button {
 
 }
 
-.lists {
+.list {
 
     background-color: var(--primary-mid-light);
     border: 2px solid var(--primary-dark);
@@ -163,7 +173,7 @@ nav button {
     
 }
 
-.lists .delete-button {
+.list .delete-button {
 
     padding: 5px;
     background-color: var(--primary-light);
@@ -303,11 +313,34 @@ dialog::backdrop {
 
 }
 
+#new-item-form {
+
+    display: flex;
+    flex-flow: column;
+
+}
+
+#form-title {
+
+    margin-bottom: 8px;
+    text-align: center;
+
+}
 
 input, select, textarea {
 
     display: block;
     margin-bottom: 8px;
+    width: 85%;
+    margin-bottom: 16px;
+    background-color: var(--primary-light);
+    padding: 3px;
+
+}
+
+.radio {
+
+    margin-bottom: 16px;
 
 }
 
@@ -315,18 +348,42 @@ input, select, textarea {
 
     display: inline;
     margin-left: 8px;
-
-}
-
-input {
-
-    background-color: var(--primary-light);
+    margin-bottom: 8px;
+    width: auto;
 
 }
 
 fieldset {
 
     border: none;
+
+}
+
+#new-item-submit {
+
+    padding: 5px;
+    background-color: var(--primary-light);
+    border: 1px solid var(--primary-dark);
+    border-radius: 5px;
+    color: var(--primary-dark);
+    align-self: center;
+    margin-bottom: 5px;
+
+}
+
+#form-modal-close {
+
+    padding: 5px;
+    background-color: var(--primary-light);
+    border: 1px solid var(--primary-dark);
+    border-radius: 5px;
+    color: var(--primary-dark);
+    margin-bottom: 5px;
+    font-weight: 700;
+
+    position: absolute;
+    right: 8px;
+    top: 8px; 
 
 }
 

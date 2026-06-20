@@ -16,6 +16,23 @@ export const dataManager = (state) => ({
 
     },
 
+    updateItem: (itemUpdate) => {
+
+        const item = state[itemUpdate.type][itemUpdate.id];
+
+        Object.entries(itemUpdate).forEach(property => {
+
+            item[property[0]] = (property[1] !== '') ? property[1] : null;
+
+        });
+
+        item.id = parseInt(item.id, 10);
+        item.parentId = parseInt(item.parentId, 10);
+        state.eventHandler.bus.publish(state.eventHandler.events.item_updated, item);
+
+
+    },
+
     removeItem: (details) => {
 
         const deleteItemsRecursively = (item, callback) => {
@@ -44,7 +61,7 @@ export const dataManager = (state) => ({
                     const index = state.relationships[item.parentId].indexOf(item.id);
                     if(index !== -1){
                         // Delete the relationship of this item with its parent
-                        delete state.relationships[item.parentId][index];
+                        state.relationships[item.parentId].splice(index, 1);
                     }
                 }
             }
@@ -52,7 +69,7 @@ export const dataManager = (state) => ({
             return result;
 
         }
-
+        
         const item = state[details.type][details.id];
         const result = deleteItemsRecursively(item, deleteItemsRecursively);
 
@@ -75,7 +92,7 @@ export const dataManager = (state) => ({
     exportAll: () => {
 
         const getItemsRecursively = (item, callback) => {
-
+            
             if(state.relationships[item.id] !== undefined) {
 
                 item.subItems = [];
@@ -94,7 +111,7 @@ export const dataManager = (state) => ({
 
         const model = [];
 
-        Object.values(state.projects).forEach(project => {
+        Object.values(state.project).forEach(project => {
 
             model.push(getItemsRecursively(project, getItemsRecursively));
 
@@ -133,13 +150,24 @@ export const persister = (state) => ({
         const toDoState = {};
 
         Object.entries(state).forEach(property => {
-            toDoState[property[0]] = property[1];
+            
+            // eventHandler cannot be stringified
+            if(property[0] !== 'eventHandler') {
+                toDoState[property[0]] = property[1];
+            }
+        
         });
             try {
+
                 localStorage.setItem('toDoState', JSON.stringify(toDoState));
                 return true;
+
             } catch (e) {
+
+                const msg = "Unable to access Local Storage. Progress will not be saved.";
+                state.eventHandler.bus.publish(state.eventHandler.events.data_access_error, msg);
                 return false;
+
             }
     },
 
@@ -149,19 +177,32 @@ export const persister = (state) => ({
         
         if(toDoState) { 
             Object.entries(JSON.parse(toDoState)).forEach(property => {
+
                 state[property[0]] = property[1];
+
             });
+
             return true;
+
         }
 
+        const msg = "Failed to load from Local Storage.";
+        state.eventHandler.bus.publish(state.eventHandler.events.data_load_fail, msg);
         return false;
     },
 });
 
-export const eventSubscriber = (state) => ({
+export const eventHandler = (state) => ({
 
-    subscribe: (bus, event, callback) => {
-        const unsubscribe = bus.subscribe(event, callback);
+    publish: (event, details = null) => {
+
+        state.bus.publish(event, details);
+
+    },
+    
+    subscribe: (event, callback) => {
+
+        const unsubscribe = state.eventHandler.bus.subscribe(event, callback);
         //state.unSubList.push(unsubscribe);
     },
 
