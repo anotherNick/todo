@@ -1,18 +1,21 @@
 export const dataManager = (state) => ({
 
-    addItem: (newItem) => {
+    addItem: (item) => {
 
-        newItem.id = state.index;
+        item.id = state.index;
+        item.parentId = parseInt(item.parentId, 10);
         state.index++;
-        state[newItem.type][newItem.id] = newItem;
+        state[item.type][item.id] = item;
 
-        if(newItem.parentId !== undefined) {
-            if(state.relationships[newItem.parentId] === undefined){
-                state.relationships[newItem.parentId] = [];
+        if(item.parentId !== undefined) {
+            if(state.relationships[item.parentId] === undefined){
+                state.relationships[item.parentId] = [];
             }
 
-            state.relationships[newItem.parentId].push(newItem.id);
+            state.relationships[item.parentId].push(item.id);
         }
+
+        state.eventHandler.bus.publish(state.eventHandler.events.item_added, item);
 
     },
 
@@ -77,16 +80,31 @@ export const dataManager = (state) => ({
 
     },
 
-    getItem: (type, id) => {
-        const index = state[type].findIndex(item => item.id === id);
+    getItem: (type, id) => { 
 
-        if(index !== -1){
-            return state[type][index];
-        }
+            return state[type][id];
+    
     },
     
     getItems: (type) => {
+    
         return state[type];
+    
+    },
+
+    getParentType: (type) => {
+
+        switch(type) {
+            case "subitem":
+                return "item";
+            case "item":
+                return "list";
+            case "list":
+                return "project";
+            default:
+                return null;
+            }
+
     },
 
     exportAll: () => {

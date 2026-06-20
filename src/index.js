@@ -41,9 +41,16 @@ ToDo.subscribe(events.item_delete_request, (e) => {
 
 });
 
-ToDo.subscribe(events.item_form_submit, details => {
+ToDo.subscribe(events.item_update_request, details => {
 
     ToDo.updateItem(details);
+    ToDo.saveState();
+
+});
+
+ToDo.subscribe(events.item_add_request, details => {
+
+    ToDo.addItem(details);
     ToDo.saveState();
 
 });
@@ -75,6 +82,30 @@ pubSub.subscribe(events.item_updated, (item) => {
 
 });
 
+pubSub.subscribe(events.item_added, (item) => {
+
+    const formModal = document.getElementById('form-modal');
+    formModal.close();
+    
+    if(item.type != 'project'){
+        const viewType = item.type + "View";
+        const newElement = listView[viewType](item);
+        const parentType = ToDo.getParentType(item.type);
+        const parent = ToDo.getItem(parentType, item.parentId);
+        const selector = `#${parent.type}-${parent.id}-container`; 
+        const container = document.querySelector(selector); 
+        container.append(newElement);
+    } else {
+
+        const toDoData = ToDo.exportAll();
+        listView.renderAll(toDoData);
+        listView.updateActiveProject(item.id);
+
+    }
+
+
+});
+
 const toDoData = ToDo.exportAll();
 
 listView.renderAll(toDoData);
@@ -86,7 +117,21 @@ const newItemForm = document.getElementById('new-item-form');
         const formData = new FormData(e.target);
         const entries = Object.fromEntries(formData);
         
-        pubSub.publish(events.item_form_submit, entries);
+        if(entries.id != ''){
+
+            pubSub.publish(events.item_update_request, entries);
+        
+        } else {
+
+            pubSub.publish(events.item_add_request, entries);
+
+        }
+
+        newItemForm.reset();
+        const hiddenInputs = newItemForm.querySelectorAll('input[type="hidden"]');
+            hiddenInputs.forEach(input => {
+                input.value = '';
+            });
 
 
     });

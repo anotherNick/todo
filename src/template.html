@@ -16,17 +16,16 @@
 
     </div>
     <dialog id="form-modal">
-        <button id="form-modal-close">X</button>
         <h2 id="form-title">New Item</h2>
         <form method="dialog" id="new-item-form">
-            <input type="hidden" name="id">
-            <input type="hidden" name="type">
-            <input type="hidden" name="subtype">
+            <input type="hidden" name="id" id="new-item-id">
+            <input type="hidden" name="type" id="new-item-type">
+            <input type="hidden" name="subtype" id="new-item-subtype">
             <label for="title" id="title-input-label">Item Name:</label>
             <input type="text" id="title" name="title">
             
             <fieldset class="list-fields item-fields subitem-fields">
-                <input type="hidden" name="parentId">
+                <input type="hidden" name="parentId" id="new-item-parent-id">
                 <fieldset class="list-fields item-fields subitem-fields radio">
                     <legend>
                         Priority Level:
@@ -55,6 +54,7 @@
             </fieldset>
             <button type="submit" id="new-item-submit">Submit</button>
         </form>
+        <button id="form-modal-close">X</button>
     </dialog>
 </body>
 </html>

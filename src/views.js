@@ -214,6 +214,7 @@ export default class View {
 
             const itemContainer = document.createElement('ul');
                 itemContainer.className = "item-list";
+                itemContainer.id = `list-${list.id}-container`;
 
             if(list.subItems !== undefined) {
 
@@ -251,6 +252,20 @@ export default class View {
             const newItemBtn = document.createElement('button');
                 newItemBtn.textContent = "+New Item";
                 newItemBtn.className = "new-item";
+                newItemBtn.addEventListener('click', (e) => {
+
+                    const formTitle = document.getElementById('form-title');
+                        formTitle.textContent = "New Item";
+                    const formModal = document.getElementById('form-modal');
+                        formModal.showModal();
+                    const type = document.getElementById('new-item-type');
+                        type.value = "item";
+                    const subtype = document.getElementById('new-item-subtype');
+                        subtype.value = "subitem";
+                    const parentId = document.getElementById('new-item-parent-id');
+                        parentId.value = list.id;
+
+                });
 
             listDiv.append(newItemBtn);
             listDiv.append(itemContainer);
@@ -319,6 +334,12 @@ export default class View {
                     formTitle.textContent = "New List";
                 const formModal = document.getElementById('form-modal');
                     formModal.showModal();
+                const type = document.getElementById('new-item-type');
+                    type.value = "list";
+                const subtype = document.getElementById('new-item-subtype');
+                    subtype.value = "item";
+                const parentId = document.getElementById('new-item-parent-id');
+                    parentId.value = project.id;
 
             });
         
@@ -397,6 +418,18 @@ export default class View {
         const newProjectBtn = document.createElement('button');
             newProjectBtn.textContent = "+New Project";
             newProjectBtn.id = "new-project";
+            newProjectBtn.addEventListener('click', (e) => {
+
+                const formTitle = document.getElementById('form-title');
+                    formTitle.textContent = "New Project";
+                const formModal = document.getElementById('form-modal');
+                    formModal.showModal();
+                const type = document.getElementById('new-item-type');
+                    type.value = "project";
+                const subtype = document.getElementById('new-item-subtype');
+                    subtype.value = "list";
+
+            });
         projectTabs.append(newProjectBtn);
     }
 }
