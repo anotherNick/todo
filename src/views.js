@@ -105,6 +105,11 @@ export default class View {
                     itemDeleteBtn.dataset.parentId = item.parentId;
                     itemDeleteBtn.dataset.type = item.type;
                     itemDeleteBtn.addEventListener('click', (e) => {
+                      
+                      const userConfirmed = confirm("Are you sure? Deletion cannot be undone.");
+                      
+                      if (userConfirmed) {
+
                         const id = e.target.value;
                         const parentId = e.target.dataset.parentId;
                         const type = e.target.dataset.type;
@@ -115,6 +120,8 @@ export default class View {
                         }
 
                         this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
+                      
+                      }
                     });
             itemBodyHeader.append(itemDue);
             itemBodyHeader.append(itemPriority);
@@ -225,16 +232,21 @@ export default class View {
                 listDeleteBtn.dataset.parentId = list.parentId;
                 listDeleteBtn.dataset.type = list.type;
                 listDeleteBtn.addEventListener('click', (e) => {
+                  const userConfirmed = confirm("Are you sure? Deletion cannot be undone.");
+                  if (userConfirmed) {
                     const id = e.target.value;
                     const parentId = e.target.dataset.parentId;
                     const type = e.target.dataset.type;
                     const parentDiv = e.target.closest('.' + type);
-                    
-                    if(parentDiv) {
-                        parentDiv.remove();
-                    }
+                      
 
-                    this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
+                        if(parentDiv) {
+                            parentDiv.remove();
+                        }
+
+                        this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
+                
+                  }
                 });
             const newItemBtn = document.createElement('button');
                 newItemBtn.textContent = "+New Item";
@@ -267,6 +279,10 @@ export default class View {
                 deleteProjectBtn.dataset.parentId = project.parentId;
                 deleteProjectBtn.dataset.type = project.type;
                 deleteProjectBtn.addEventListener('click', (e) => {
+                const userConfirmed = confirm("Are you sure? Deletion cannot be undone.");
+                    
+                  if (userConfirmed) {
+
                     const id = e.target.value;
                     const parentId = e.target.dataset.parentId;
                     const type = e.target.dataset.type;
@@ -289,6 +305,8 @@ export default class View {
                     }
 
                     this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
+                
+                  }
                 });
         
         
