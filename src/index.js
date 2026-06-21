@@ -9,29 +9,31 @@ const ToDo = toDoSystem(pubSub, events);
 const listView = new View({ pubSub, events });
 const date = format(new Date(), "PP");
 
-const project = toDoProject('Default Project');
-const secondProject = toDoProject('Another Project');
+if(!ToDo.loadState()) {
+    const project = toDoProject('Default Project');
+    const secondProject = toDoProject('Another Project');
 
-const newList = toDoList("default", 1);
-const secondList = toDoList("not default", 1, date);
-const thirdList = toDoList("an empty list", 1);
+    const newList = toDoList("default", 1);
+    const secondList = toDoList("not default", 1, date);
+    const thirdList = toDoList("an empty list", 1);
 
-const newItem = toDoItem("test item", 3);
-const secondItem = toDoItem('another test item', 3, date, 'test description', "Low", "test note");
-const thirdItem = toDoItem('third todo item', 3, date, 'third description', "Mediun", "third notes" );
-const fourthItem = toDoItem('fourth todo item', 4, date, 'fourth description', "High", "fourth notes" );
+    const newItem = toDoItem("test item", 3);
+    const secondItem = toDoItem('another test item', 3, date, 'test description', "Low", "test note");
+    const thirdItem = toDoItem('third todo item', 3, date, 'third description', "Mediun", "third notes" );
+    const fourthItem = toDoItem('fourth todo item', 4, date, 'fourth description', "High", "fourth notes" );
 
-ToDo.addItem(project);
-ToDo.addItem(secondProject);
-ToDo.addItem(newList);
-ToDo.addItem(secondList);
-ToDo.addItem(thirdList);
-ToDo.addItem(newItem);
-ToDo.addItem(secondItem);
-ToDo.addItem(thirdItem);
-ToDo.addItem(fourthItem);
+    ToDo.addItem(project);
+    ToDo.addItem(secondProject);
+    ToDo.addItem(newList);
+    ToDo.addItem(secondList);
+    ToDo.addItem(thirdList);
+    ToDo.addItem(newItem);
+    ToDo.addItem(secondItem);
+    ToDo.addItem(thirdItem);
+    ToDo.addItem(fourthItem);
 
-console.log('Generated default content');
+    console.log('Generated default content');
+}
 
 
 ToDo.subscribe(events.item_delete_request, (e) => { 
@@ -107,7 +109,6 @@ pubSub.subscribe(events.item_added, (item) => {
 });
 
 const toDoData = ToDo.exportAll();
-
 listView.renderAll(toDoData);
 
 const newItemForm = document.getElementById('new-item-form');

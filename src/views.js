@@ -35,25 +35,7 @@ export default class View {
                     itemEditBtn.textContent = "\u270E";
                     itemEditBtn.addEventListener('click', (e) => {
 
-                        const formTitle = document.getElementById('form-title');
-                            formTitle.textContent =  `Update ${item.type.charAt(0).toUpperCase()}${item.type.slice(1)}`;
-                        const itemFields = document.querySelectorAll('.item-fields');
-                            itemFields.forEach(fieldset => {
-
-                            fieldset.classList.add('hidden');
-                            fieldset.disabled = true;
-
-                        });
-
-                        const fieldType = `.${item.type}-fields`;
-                        const validFields = document.querySelectorAll(fieldType);
-                            validFields.forEach(fieldset => {
-
-                                fieldset.classList.remove('hidden');
-                                fieldset.disabled = false;
-
-                            });
-
+                        this.updateFormFields('item');
                         Object.entries(item).forEach(property => {
 
                             const input = document.querySelector(`input[name="${property[0]}"]`);
@@ -152,25 +134,7 @@ export default class View {
                         editListBtn.textContent = "\u270E";
                         editListBtn.addEventListener('click', (e) => {
 
-                            const formTitle = document.getElementById('form-title');
-                                formTitle.textContent =  `Update ${list.type.charAt(0).toUpperCase()}${list.type.slice(1)}`;
-                            const itemFields = document.querySelectorAll('.item-fields');
-                            itemFields.forEach(fieldset => {
-
-                                fieldset.classList.add('hidden');
-                                fieldset.disabled = true;
-
-                            });
-
-                            const fieldType = `.${list.type}-fields`;
-                            const validFields = document.querySelectorAll(fieldType);
-                                validFields.forEach(fieldset => {
-
-                                    fieldset.classList.remove('hidden');
-                                    fieldset.disabled = false;
-
-                                });
-
+                            this.updateFormFields('list')
                             Object.entries(list).forEach(property => {
 
                                 const input = document.querySelector(`input[name="${property[0]}"]`);
@@ -254,8 +218,7 @@ export default class View {
                 newItemBtn.className = "new-item";
                 newItemBtn.addEventListener('click', (e) => {
 
-                    const formTitle = document.getElementById('form-title');
-                        formTitle.textContent = "New Item";
+                    this.updateFormFields('item', 'New');
                     const formModal = document.getElementById('form-modal');
                         formModal.showModal();
                     const type = document.getElementById('new-item-type');
@@ -330,8 +293,7 @@ export default class View {
             newListBtn.textContent = "+New List";
             newListBtn.addEventListener('click', (e) => {
 
-                const formTitle = document.getElementById('form-title');
-                    formTitle.textContent = "New List";
+                this.updateFormFields('list', 'New');
                 const formModal = document.getElementById('form-modal');
                     formModal.showModal();
                 const type = document.getElementById('new-item-type');
@@ -420,8 +382,7 @@ export default class View {
             newProjectBtn.id = "new-project";
             newProjectBtn.addEventListener('click', (e) => {
 
-                const formTitle = document.getElementById('form-title');
-                    formTitle.textContent = "New Project";
+                this.updateFormFields('project', 'New');
                 const formModal = document.getElementById('form-modal');
                     formModal.showModal();
                 const type = document.getElementById('new-item-type');
@@ -431,5 +392,37 @@ export default class View {
 
             });
         projectTabs.append(newProjectBtn);
+    }
+
+    updateFormFields(type, action = "Update") {
+
+        const newItemForm = document.getElementById('new-item-form');
+              newItemForm.reset();
+        
+        const hiddenInputs = newItemForm.querySelectorAll('input[type="hidden"]');
+              hiddenInputs.forEach(input => {
+                input.value = '';
+              });
+        
+        const formTitle = document.getElementById('form-title');
+              formTitle.textContent =  `${action} ${type.charAt(0).toUpperCase()}${type.slice(1)}`;
+    
+        const itemFields = document.querySelectorAll('.item-fields');
+              itemFields.forEach(fieldset => {
+
+                fieldset.classList.add('hidden');
+                fieldset.disabled = true;
+
+              });
+
+        const fieldType = `.${type}-fields`;
+        const validFields = document.querySelectorAll(fieldType);
+              validFields.forEach(fieldset => {
+
+                fieldset.classList.remove('hidden');
+                fieldset.disabled = false;
+
+              });
+
     }
 }
