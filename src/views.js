@@ -37,8 +37,8 @@ export default class View {
 
                         this.updateFormFields('item');
                         Object.entries(item).forEach(property => {
-
-                            const input = document.querySelector(`input[name="${property[0]}"]`);
+console.log(property);
+                            const input = document.querySelector(`[name="${property[0]}"]`);
                             if(input !== null) {
                                 input.value = property[1];
                             }
@@ -76,10 +76,14 @@ export default class View {
                         itemPriority.textContent = "Priority: " + item.priority;
                 const itemDesc = document.createElement('div');
                     itemDesc.className = "item-description";
-                    itemDesc.textContent = item.desc;
+                    if(item.desc !== "") {
+                        itemDesc.textContent = "Description:\n" + item.desc;
+                    }
                 const itemNotes = document.createElement('div');
                     itemNotes.className = "item-notes";
-                    itemNotes.textContent = "Notes: " + item.notes;
+                    if(item.notes !== "") {
+                        itemNotes.textContent = "Notes:\n" + item.notes;
+                    }
                 const itemDeleteBtn = document.createElement('button');
                     itemDeleteBtn.value = item.id;
                     itemDeleteBtn.textContent = 'Delete Item';
@@ -88,10 +92,6 @@ export default class View {
                     itemDeleteBtn.dataset.type = item.type;
                     itemDeleteBtn.addEventListener('click', (e) => {
                       
-                      const userConfirmed = confirm("Are you sure? Deletion cannot be undone.");
-                      
-                      if (userConfirmed) {
-
                         const id = e.target.value;
                         const parentId = e.target.dataset.parentId;
                         const type = e.target.dataset.type;
@@ -103,10 +103,9 @@ export default class View {
 
                         this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
                       
-                      }
                     });
-            itemBodyHeader.append(itemDue);
             itemBodyHeader.append(itemPriority);
+            itemBodyHeader.append(itemDue);
             itemBody.append(itemBodyHeader);
             itemBody.append(itemDesc);
             itemBody.append(itemNotes);
