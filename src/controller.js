@@ -5,6 +5,8 @@ export const events = {
     item_add_request: "view:item_add_request",
     item_update_request: "view:item_update_request",
     item_delete_request: "view:item_delete_request",
+    item_completed: "view:item_completed",
+    item_incompleted: "view:item_incompleted",
     data_save_request: "view:data_save_request",
     data_load_request: "view:data_load_request",
     data_access_error: "model:data_load_fail",

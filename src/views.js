@@ -1,8 +1,9 @@
 export default class View {
 
-    constructor(eventHandler) {
+    constructor(eventHandler, dateFormatter) {
         this.eventHandler = eventHandler;
         this.activeProject = null;
+        this.dateFormatter = dateFormatter;
     }
 
     get eventBus() {
@@ -15,7 +16,9 @@ export default class View {
     
     getDate(date) {
 
-        return date ? date : "N/A";
+        if(date) {
+            return date = this.dateFormatter(new Date(), "PP");
+        }
 
     }
 
@@ -30,6 +33,22 @@ export default class View {
                 const itemCheckbox = document.createElement('input');
                     itemCheckbox.type = 'checkbox';
                     itemCheckbox.className = "item-complete";
+                    itemCheckbox.checked = item.complete;
+                    itemCheckbox.addEventListener('change', (e) => {
+
+                        const checkedItem = itemCheckbox.closest('.item');
+
+                        if(itemCheckbox.checked) {
+                            checkedItem.style.order = 1;
+                            checkedItem.style.filter = "brightness(0.5)";
+                            this.eventBus.publish(this.eventList.item_completed, { id: item.id, type: item.type });
+                        }else{
+                            checkedItem.style.order = 0;
+                            checkedItem.style.filter = "brightness(1)";
+                            this.eventBus.publish(this.eventList.item_incompleted, { id: item.id, type: item.type });
+                        }
+
+                    });
                 const itemEditBtn = document.createElement('button');
                     itemEditBtn.className = "item-header-button";
                     itemEditBtn.textContent = "\u270E";
@@ -37,7 +56,7 @@ export default class View {
 
                         this.updateFormFields('item');
                         Object.entries(item).forEach(property => {
-console.log(property);
+
                             const input = document.querySelector(`[name="${property[0]}"]`);
                             if(input !== null) {
                                 input.value = property[1];
@@ -128,6 +147,22 @@ console.log(property);
                     const listCheckbox = document.createElement('input');
                         listCheckbox.type = 'checkbox';
                         listCheckbox.className = "list-complete";
+                        listCheckbox.checked = list.complete;
+                        listCheckbox.addEventListener('change', (e) => {
+
+                            const checkedItem = listCheckbox.closest('.list');
+
+                            if(listCheckbox.checked) {
+                                checkedItem.style.order = 1;
+                                checkedItem.style.filter = "brightness(0.5)";
+                                this.eventBus.publish(this.eventList.item_completed, { id: list.id, type: list.type });
+                            }else{
+                                checkedItem.style.order = 0;
+                                checkedItem.style.filter = "brightness(1)";
+                                this.eventBus.publish(this.eventList.item_incompleted, { id: list.id, type: list.type });
+                            }
+
+                        });
                     const editListBtn = document.createElement('button');
                         editListBtn.className = "list-header-button";
                         editListBtn.textContent = "\u270E";

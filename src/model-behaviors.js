@@ -1,3 +1,5 @@
+import { toDoItem, toDoList, toDoProject } from "./model-factories.js";
+
 export const dataManager = (state) => ({
 
     addItem: (item) => {
@@ -141,12 +143,20 @@ export const dataManager = (state) => ({
 
 });
 
-export const canBeCompleted = (state) => ({
-    complete: false,
+export const completer = (state) => ({
 
-    toggleComplete: () => { 
-        state.complete = (state.complete === true ? false : true); 
+    completeItem: (type, id) => {
+
+        state[type][id]['complete'] = true;
+
     },
+
+    incompleteItem: (type, id) => {
+
+        state[type][id]['complete'] = false;
+
+    },
+
 });
 
 // Expects an object with only the properties and values to be replaced.
@@ -197,6 +207,46 @@ export const persister = (state) => ({
             Object.entries(JSON.parse(toDoState)).forEach(property => {
 
                 state[property[0]] = property[1];
+
+            });
+
+            // Reinstantiate Objects
+            //Object.entries(state['subitem']).forEach(entry => {
+
+                //const flatItem = entry[1];
+                //const newItem = toDoItem(flatItem.title, flatItem.parentId, flatItem.due, flatItem.desc, flatItem.priority, flatItem.notes, flatItem.complete);
+                //state['item'][newItem.id] = newItem;
+
+            //});
+            Object.entries(state['item']).forEach(entry => {
+
+                const flatItem = entry[1];
+                const newItem = toDoItem(flatItem.title, 
+                                         flatItem.parentId, 
+                                         flatItem.due, 
+                                         flatItem.desc, 
+                                         flatItem.priority, 
+                                         flatItem.notes, 
+                                         flatItem.complete);
+                state['item'][newItem.id] = newItem;
+
+            });
+            Object.entries(state['list']).forEach(entry => {
+
+                const flatItem = entry[1];
+                const newItem = toDoList(flatItem.title, 
+                                         flatItem.parentId, 
+                                         flatItem.due, 
+                                         flatItem.priority, 
+                                         flatItem.complete);
+                state['list'][newItem.id] = newItem;
+
+            });
+            Object.entries(state['project']).forEach(entry => {
+
+                const flatItem = entry[1];
+                const newItem = toDoProject(flatItem.title);
+                state['project'][newItem.id] = newItem;
 
             });
 

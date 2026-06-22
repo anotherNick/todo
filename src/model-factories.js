@@ -1,6 +1,6 @@
-import { canBeCompleted, dataManager, canBeUpdated, eventHandler, persister } from "./model-behaviors.js";
+import { completer, dataManager, eventHandler, persister } from "./model-behaviors.js";
 
-export const toDoItem = (title, parentId, due = null, desc = null, priority = "Low", notes = null) => {
+export const toDoItem = (title, parentId, due = null, desc = null, priority = "Low", notes = null, complete = false) => {
 
     let state = {
         id: '',
@@ -12,13 +12,14 @@ export const toDoItem = (title, parentId, due = null, desc = null, priority = "L
         priority,
         desc,
         notes,
+        complete,
     }
 
-    return Object.assign(state, canBeUpdated(state), canBeCompleted(state));
+    return Object.assign(state);
 
 }
 
-export const toDoList = (title, parentId, due = null, priority = "Low") => {
+export const toDoList = (title, parentId, due = null, priority = "Low", complete = false) => {
 
     let state = {
         id: '', 
@@ -28,9 +29,10 @@ export const toDoList = (title, parentId, due = null, priority = "Low") => {
         title,
         due,
         priority,
+        complete,
     }
 
-    return Object.assign(state, canBeUpdated(state));
+    return Object.assign(state);
 
 }
 
@@ -61,6 +63,6 @@ export const toDoSystem = (bus, events) => {
     }
 
     
-    return Object.assign({}, dataManager(state), eventHandler(state), persister(state));
+    return Object.assign({}, dataManager(state), eventHandler(state), persister(state), completer(state));
 
 }

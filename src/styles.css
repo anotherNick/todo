@@ -207,6 +207,8 @@ nav button {
     margin-bottom: 8px;
     width: 100%;
     border-bottom: 1px solid var(--primary-dark);
+    display: flex;
+    flex-flow: column;
 
 }
 

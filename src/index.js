@@ -6,7 +6,7 @@ import { format } from "date-fns";
 
 const pubSub = new EventBus();
 const ToDo = toDoSystem(pubSub, events);
-const listView = new View({ pubSub, events });
+const listView = new View({ pubSub, events }, format);
 const date = format(new Date(), "PP");
 
 if(!ToDo.loadState()) {
@@ -36,36 +36,50 @@ if(!ToDo.loadState()) {
 }
 
 
-ToDo.subscribe(events.item_delete_request, (e) => { 
+pubSub.subscribe(events.item_delete_request, (e) => { 
 
     ToDo.removeItem(e);
     ToDo.saveState();
 
 });
 
-ToDo.subscribe(events.item_update_request, details => {
+pubSub.subscribe(events.item_update_request, details => {
 
     ToDo.updateItem(details);
     ToDo.saveState();
 
 });
 
-ToDo.subscribe(events.item_add_request, details => {
+pubSub.subscribe(events.item_add_request, details => {
 
     ToDo.addItem(details);
     ToDo.saveState();
 
 });
 
-ToDo.subscribe(events.data_load_request, () => {
+pubSub.subscribe(events.data_load_request, () => {
 
     ToDo.loadState();
     listView.renderAll(ToDo.exportAll());
 
 });
 
-ToDo.subscribe(events.data_save_request, () => {
+pubSub.subscribe(events.data_save_request, () => {
 
+    ToDo.saveState();
+
+});
+
+pubSub.subscribe(events.item_completed, details => {
+
+    ToDo.completeItem(details.type, details.id);
+    ToDo.saveState();
+
+});
+
+pubSub.subscribe(events.item_incompleted, details => {
+
+    ToDo.incompleteItem(details.type, details.id);
     ToDo.saveState();
 
 });
@@ -73,7 +87,7 @@ ToDo.subscribe(events.data_save_request, () => {
 pubSub.subscribe(events.item_updated, (item) => {
 
     const formModal = document.getElementById('form-modal');
-    formModal.close();
+          formModal.close();
 
     const viewType = item.type + "View";
     const newElement = listView[viewType](item);
@@ -87,7 +101,7 @@ pubSub.subscribe(events.item_updated, (item) => {
 pubSub.subscribe(events.item_added, (item) => {
 
     const formModal = document.getElementById('form-modal');
-    formModal.close();
+          formModal.close();
     
     if(item.type != 'project'){
         const viewType = item.type + "View";
@@ -96,7 +110,7 @@ pubSub.subscribe(events.item_added, (item) => {
         const parent = ToDo.getItem(parentType, item.parentId);
         const selector = `#${parent.type}-${parent.id}-container`; 
         const container = document.querySelector(selector); 
-        container.append(newElement);
+              container.append(newElement);
     } else {
 
         const toDoData = ToDo.exportAll();
@@ -112,7 +126,7 @@ const toDoData = ToDo.exportAll();
 listView.renderAll(toDoData);
 
 const newItemForm = document.getElementById('new-item-form');
-    newItemForm.addEventListener('submit', e => {
+      newItemForm.addEventListener('submit', e => {
 
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -130,7 +144,7 @@ const newItemForm = document.getElementById('new-item-form');
 
         newItemForm.reset();
         const hiddenInputs = newItemForm.querySelectorAll('input[type="hidden"]');
-            hiddenInputs.forEach(input => {
+              hiddenInputs.forEach(input => {
                 input.value = '';
             });
 
@@ -138,16 +152,47 @@ const newItemForm = document.getElementById('new-item-form');
     });
 
 const loadDataBtn = document.getElementById('load-data');
-    loadDataBtn.addEventListener('click', () => {
+      loadDataBtn.addEventListener('click', () => {
 
         pubSub.publish(events.data_load_request);
 
     });
 
 const formCloseBtn = document.getElementById('form-modal-close');
-    formCloseBtn.addEventListener('click', () => {
+      formCloseBtn.addEventListener('click', () => {
 
         const formModal = document.getElementById('form-modal');
-            formModal.close();
+              formModal.close();
 
     });
+
+const checkedItems = document.querySelectorAll('.item-complete');
+      checkedItems.forEach(checkbox => {
+
+        const checkedItem = checkbox.closest('.item');
+        
+        if(checkbox.checked) {
+            checkedItem.style.order = 1;
+            checkedItem.style.filter = "brightness(0.5)";
+        }else{
+            checkedItem.style.order = 0;
+            checkedItem.style.filter = "brightness(1)";
+        }
+
+      });
+
+
+const checkedLists = document.querySelectorAll('.list-complete');
+      checkedLists.forEach(checkbox => {
+
+        const checkedItem = checkbox.closest('.list');
+        
+        if(checkbox.checked) {
+            checkedItem.style.order = 1;
+            checkedItem.style.filter = "brightness(0.5)";
+        }else{
+            checkedItem.style.order = 0;
+            checkedItem.style.filter = "brightness(1)";
+        }
+
+      });
