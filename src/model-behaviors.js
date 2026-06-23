@@ -159,18 +159,6 @@ export const completer = (state) => ({
 
 });
 
-// Expects an object with only the properties and values to be replaced.
-export const canBeUpdated = (state) => ({
-    update: (values) => {
-        for(const [property, value] of Object.entries(values)) {
-           
-            state[property] = value; 
-        
-        }
-    },
-    
-});
-
 export const persister = (state) => ({
 
     saveState: () => {
@@ -218,6 +206,7 @@ export const persister = (state) => ({
                 //state['item'][newItem.id] = newItem;
 
             //});
+
             Object.entries(state['item']).forEach(entry => {
 
                 const flatItem = entry[1];
@@ -231,6 +220,7 @@ export const persister = (state) => ({
                 state['item'][newItem.id] = newItem;
 
             });
+
             Object.entries(state['list']).forEach(entry => {
 
                 const flatItem = entry[1];
@@ -242,6 +232,7 @@ export const persister = (state) => ({
                 state['list'][newItem.id] = newItem;
 
             });
+
             Object.entries(state['project']).forEach(entry => {
 
                 const flatItem = entry[1];
@@ -258,26 +249,4 @@ export const persister = (state) => ({
         state.eventHandler.bus.publish(state.eventHandler.events.data_load_fail, msg);
         return false;
     },
-});
-
-export const eventHandler = (state) => ({
-
-    publish: (event, details = null) => {
-
-        state.bus.publish(event, details);
-
-    },
-    
-    subscribe: (event, callback) => {
-
-        const unsubscribe = state.eventHandler.bus.subscribe(event, callback);
-        //state.unSubList.push(unsubscribe);
-    },
-
-    unsubscribeAll: () => {
-        
-        state.unSubList = [];
-    
-    },
-
 });

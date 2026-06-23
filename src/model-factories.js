@@ -1,4 +1,23 @@
-import { completer, dataManager, eventHandler, persister } from "./model-behaviors.js";
+import { completer, dataManager, persister } from "./model-behaviors.js";
+
+export const toDoSubitem = (title, parentId, due = null, desc = null, priority = "Low", notes = null, complete = false) => {
+
+    let state = {
+        id: '',
+        type: "item",
+        subtype: "subitem",
+        parentId,
+        title,
+        due,
+        priority,
+        desc,
+        notes,
+        complete,
+    }
+
+    return Object.assign(state);
+
+}
 
 export const toDoItem = (title, parentId, due = null, desc = null, priority = "Low", notes = null, complete = false) => {
 
@@ -63,6 +82,6 @@ export const toDoSystem = (bus, events) => {
     }
 
     
-    return Object.assign({}, dataManager(state), eventHandler(state), persister(state), completer(state));
+    return Object.assign({}, dataManager(state), persister(state), completer(state));
 
 }

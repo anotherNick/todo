@@ -49,6 +49,26 @@ export default class View {
                         }
 
                     });
+                const itemDeleteBtn = document.createElement('button');
+                    itemDeleteBtn.value = item.id;
+                    itemDeleteBtn.textContent = 'X';
+                    itemDeleteBtn.className = 'delete-button';
+                    itemDeleteBtn.dataset.parentId = item.parentId;
+                    itemDeleteBtn.dataset.type = item.type;
+                    itemDeleteBtn.addEventListener('click', (e) => {
+                      
+                        const id = e.target.value;
+                        const parentId = e.target.dataset.parentId;
+                        const type = e.target.dataset.type;
+                        const parentDiv = e.target.closest('.' + type);
+                        
+                        if(parentDiv) {
+                            parentDiv.remove();
+                        }
+
+                        this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
+                      
+                    });
                 const itemEditBtn = document.createElement('button');
                     itemEditBtn.className = "item-header-button";
                     itemEditBtn.textContent = "\u270E";
@@ -80,8 +100,9 @@ export default class View {
                     });
             itemHeader.append(itemCheckbox);
             itemHeader.append(itemTitle);
-            itemHeader.append(itemEditBtn);
             itemHeader.append(itemHamBtn);
+            itemHeader.append(itemEditBtn);
+            itemHeader.append(itemDeleteBtn);
 
             const itemBody = document.createElement('div')
                 itemBody.classList.add("item-body", "hidden");
@@ -103,32 +124,11 @@ export default class View {
                     if(item.notes !== "") {
                         itemNotes.textContent = "Notes:\n" + item.notes;
                     }
-                const itemDeleteBtn = document.createElement('button');
-                    itemDeleteBtn.value = item.id;
-                    itemDeleteBtn.textContent = 'Delete Item';
-                    itemDeleteBtn.className = 'delete-button';
-                    itemDeleteBtn.dataset.parentId = item.parentId;
-                    itemDeleteBtn.dataset.type = item.type;
-                    itemDeleteBtn.addEventListener('click', (e) => {
-                      
-                        const id = e.target.value;
-                        const parentId = e.target.dataset.parentId;
-                        const type = e.target.dataset.type;
-                        const parentDiv = e.target.closest('.' + type);
-                        
-                        if(parentDiv) {
-                            parentDiv.remove();
-                        }
-
-                        this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
-                      
-                    });
             itemBodyHeader.append(itemPriority);
             itemBodyHeader.append(itemDue);
             itemBody.append(itemBodyHeader);
             itemBody.append(itemDesc);
             itemBody.append(itemNotes);
-            itemBody.append(itemDeleteBtn);
 
         itemLi.append(itemHeader);
         itemLi.append(itemBody);
@@ -163,6 +163,32 @@ export default class View {
                             }
 
                         });
+
+                    const listDeleteBtn = document.createElement('button');
+                        listDeleteBtn.value = list.id;
+                        listDeleteBtn.textContent = 'X';
+                        listDeleteBtn.classList.add('delete-button', 'list-header-button');
+                        listDeleteBtn.dataset.parentId = list.parentId;
+                        listDeleteBtn.dataset.type = list.type;
+                        listDeleteBtn.addEventListener('click', (e) => {
+                        const userConfirmed = confirm("Are you sure? Deletion cannot be undone.");
+                        if (userConfirmed) {
+                            const id = e.target.value;
+                            const parentId = e.target.dataset.parentId;
+                            const type = e.target.dataset.type;
+                            const parentDiv = e.target.closest('.' + type);
+                            
+
+                                if(parentDiv) {
+                                    parentDiv.remove();
+                                }
+
+                                this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
+                        
+                        }
+                        });
+
+
                     const editListBtn = document.createElement('button');
                         editListBtn.className = "list-header-button";
                         editListBtn.textContent = "\u270E";
@@ -188,6 +214,7 @@ export default class View {
                 listHeader.append(listCheckbox);
                 listHeader.append(listTitle);
                 listHeader.append(editListBtn);
+                listHeader.append(listDeleteBtn);
 
                 const listBody = document.createElement('div')
                     listBody.className = "list-body";
@@ -224,29 +251,6 @@ export default class View {
                 });
             }
 
-            const listDeleteBtn = document.createElement('button');
-                listDeleteBtn.value = list.id;
-                listDeleteBtn.textContent = 'Delete List'
-                listDeleteBtn.className = 'delete-button';
-                listDeleteBtn.dataset.parentId = list.parentId;
-                listDeleteBtn.dataset.type = list.type;
-                listDeleteBtn.addEventListener('click', (e) => {
-                  const userConfirmed = confirm("Are you sure? Deletion cannot be undone.");
-                  if (userConfirmed) {
-                    const id = e.target.value;
-                    const parentId = e.target.dataset.parentId;
-                    const type = e.target.dataset.type;
-                    const parentDiv = e.target.closest('.' + type);
-                      
-
-                        if(parentDiv) {
-                            parentDiv.remove();
-                        }
-
-                        this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
-                
-                  }
-                });
             const newItemBtn = document.createElement('button');
                 newItemBtn.textContent = "+New Item";
                 newItemBtn.className = "new-item";
@@ -266,7 +270,6 @@ export default class View {
 
             listDiv.append(newItemBtn);
             listDiv.append(itemContainer);
-            listDiv.append(listDeleteBtn);
 
             return listDiv;
     }

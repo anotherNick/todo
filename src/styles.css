@@ -109,12 +109,13 @@ nav button {
     border: 2px solid var(--primary-dark);
     border-radius: 10px;
     margin: 8px;
-    width: 250px;
+    width: 275px;
     box-shadow: 5px 5px 5px var(--primary-mid-dark);
 
     display: flex;
     flex-flow: column;
     align-items: center;
+    overflow: hidden;
     
 }
 
@@ -143,6 +144,8 @@ nav button {
     align-self: center;
     margin-bottom: 5px;
     font-size: 1.15rem;
+    margin-left: 5px;
+    min-width: 30px;
 
 }
 
@@ -175,18 +178,6 @@ nav button {
     
 }
 
-.list .delete-button {
-
-    padding: 5px;
-    background-color: var(--primary-light);
-    border: 1px solid var(--primary-dark);
-    border-radius: 5px;
-    color: var(--primary-dark);
-    align-self: center;
-    margin-bottom: 5px;
-
-}
-
 .list-body {
 
     margin-bottom: 5px;
@@ -204,7 +195,6 @@ nav button {
 
 .item-list {
 
-    margin-bottom: 8px;
     width: 100%;
     border-bottom: 1px solid var(--primary-dark);
     display: flex;
