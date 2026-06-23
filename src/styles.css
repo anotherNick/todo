@@ -55,6 +55,8 @@ nav button {
 
 }
 
+/* Project Styles */
+
 .active-project {
 
     position: relative;
@@ -102,6 +104,8 @@ nav button {
     align-self: center;
 
 }
+
+/* List Styles */
 
 .list {
 
@@ -193,7 +197,9 @@ nav button {
 
 }
 
-.item-list {
+/* Item Styles */
+
+.item-list, .subitem-list {
 
     width: 100%;
     border-bottom: 1px solid var(--primary-dark);
@@ -211,7 +217,7 @@ nav button {
 
 }
 
-.item-header {
+.item-header, .subitem-header {
 
     width: 100%;
     display: flex;
@@ -226,7 +232,7 @@ nav button {
 
 }
 
-.item-title {
+.item-title, .subitem-title {
 
     flex: 1;
     text-align: left;
@@ -234,7 +240,7 @@ nav button {
 
 }
 
-.item-complete {
+.item-complete, .subitem-complete {
 
     width: 1.15rem;
     height: 1.15rem;
@@ -243,7 +249,7 @@ nav button {
 
 }
 
-.item-header button, .item-delete-button, .item-collapse-button {
+.item-header button, .item-delete-button, .subitem-header-button, .subitem-delete-button {
 
     padding: 5px;
     background-color: var(--primary-mid);
@@ -255,24 +261,25 @@ nav button {
 
 }
 
-.item-body {
+.item-body, .subitem-body {
 
     width: 100%;
     display: flex;
     flex-flow: column;
     justify-content: center;
     border-top: 1px solid var(--primary-dark);
+    border-left: 8px solid var(--primary-mid-dark);
     background-color: var(--primary-mid);
 
 }
 
-.item-body div {
+.item-body div, .subitem-body div {
 
     margin: 5px;
 
 }
 
-.item-body-header {
+.item-body-header, .subitem-body-header {
 
     display: flex;
     justify-content: space-between;
@@ -280,20 +287,58 @@ nav button {
 
 }
 
-.item-description, .item-notes {
+.item-description, .item-notes, .subitem-description, .subitem-notes {
 
     white-space: pre-wrap;
 
 }
 
-.items .delete-button {
+.new-subitem {
 
+    padding: 5px;
     background-color: var(--primary-mid-dark);
-    margin-top: 16px;
-    margin-bottom: 8px;
+    border: 1px solid var(--primary-dark);
+    border-radius: 5px;
+    color: var(--primary-dark);
     align-self: center;
+    margin-bottom: 5px;
+    font-size: .85rem;
+    min-width: 30px;
 
 }
+
+/* Subitem Unique Styles */
+
+.subitem-list {
+
+    padding-left: 16px;
+    background-color: var(--primary-mid-dark);
+
+}
+
+.subitem {
+
+
+}
+
+.subitem-header {
+
+    border: 0;
+    background-color: var(--primary-mid-dark);
+    border-top: 1px solid var(--primary-dark);
+
+}
+
+.subitem-body {
+
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    border-bottom:12px solid var(--primary-mid-dark);
+
+}
+
+/* Form Styles */
 
 #form-modal {
 

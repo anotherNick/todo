@@ -22,21 +22,21 @@ export default class View {
 
     }
 
-    itemView(item) {
+    subitemView(item) {
 
         const itemLi = document.createElement('li');
-            itemLi.dataset.itemId = item.id;
-            itemLi.classList.add(item.type, `priority-${item.priority.toLowerCase()}`);
+              itemLi.dataset.subitemId = item.id;
+              itemLi.classList.add(item.type, `priority-${item.priority.toLowerCase()}`);
 
             const itemHeader = document.createElement('div');
-                itemHeader.className = "item-header";
+                  itemHeader.className = "subitem-header";
                 const itemCheckbox = document.createElement('input');
-                    itemCheckbox.type = 'checkbox';
-                    itemCheckbox.className = "item-complete";
-                    itemCheckbox.checked = item.complete;
-                    itemCheckbox.addEventListener('change', (e) => {
+                      itemCheckbox.type = 'checkbox';
+                      itemCheckbox.className = "subitem-complete";
+                      itemCheckbox.checked = item.complete;
+                      itemCheckbox.addEventListener('change', (e) => {
 
-                        const checkedItem = itemCheckbox.closest('.item');
+                        const checkedItem = itemCheckbox.closest(`.${item.type}`);
 
                         if(itemCheckbox.checked) {
                             checkedItem.style.order = 1;
@@ -50,12 +50,12 @@ export default class View {
 
                     });
                 const itemDeleteBtn = document.createElement('button');
-                    itemDeleteBtn.value = item.id;
-                    itemDeleteBtn.textContent = 'X';
-                    itemDeleteBtn.className = 'delete-button';
-                    itemDeleteBtn.dataset.parentId = item.parentId;
-                    itemDeleteBtn.dataset.type = item.type;
-                    itemDeleteBtn.addEventListener('click', (e) => {
+                      itemDeleteBtn.value = item.id;
+                      itemDeleteBtn.textContent = 'X';
+                      itemDeleteBtn.className = 'subitem-delete-button';
+                      itemDeleteBtn.dataset.parentId = item.parentId;
+                      itemDeleteBtn.dataset.type = item.type;
+                      itemDeleteBtn.addEventListener('click', (e) => {
                       
                         const id = e.target.value;
                         const parentId = e.target.dataset.parentId;
@@ -70,9 +70,119 @@ export default class View {
                       
                     });
                 const itemEditBtn = document.createElement('button');
-                    itemEditBtn.className = "item-header-button";
-                    itemEditBtn.textContent = "\u270E";
-                    itemEditBtn.addEventListener('click', (e) => {
+                      itemEditBtn.className = "subitem-header-button";
+                      itemEditBtn.textContent = "\u270E";
+                      itemEditBtn.addEventListener('click', (e) => {
+
+                        this.updateFormFields('subitem');
+                        Object.entries(item).forEach(property => {
+
+                            const input = document.querySelector(`[name="${property[0]}"]`);
+                            if(input !== null) { console.log(property[1]);
+                                input.value = property[1];
+                            }
+
+                        });
+
+                        const formModal = document.getElementById('form-modal');
+                            formModal.showModal();
+
+                    });
+                const itemTitle = document.createElement('span');
+                      itemTitle.classList.add("subitem-title", "item-collapse-button");
+                      itemTitle.textContent = item.title;
+                      itemTitle.addEventListener('click', (e) => {
+                        const parentLi = e.target.closest('li');
+                        parentLi.querySelector('.subitem-body').classList.toggle('hidden');
+                    });
+            itemHeader.append(itemCheckbox);
+            itemHeader.append(itemTitle);
+            itemHeader.append(itemEditBtn);
+            itemHeader.append(itemDeleteBtn);
+
+            const itemBody = document.createElement('div')
+                  itemBody.classList.add("subitem-body", "hidden");
+                const itemBodyHeader = document.createElement('div');
+                    itemBodyHeader.className = "subitem-body-heading";
+                    const itemDue = document.createElement('div');
+                          itemDue.className = "subitem-due-date";
+                          itemDue.textContent = this.getDate(item.due);
+                    const itemPriority = document.createElement('div');
+                          itemPriority.className = "list-priority";
+                          itemPriority.textContent = "Priority: " + item.priority;
+                const itemDesc = document.createElement('div');
+                      itemDesc.className = "subitem-description";
+                    if(item.desc !== "" && item.desc !== null) {
+                        itemDesc.textContent = "Description:\n" + item.desc;
+                    }
+                const itemNotes = document.createElement('div');
+                    itemNotes.className = "subitem-notes";
+                    if(item.notes !== "" && item.notes !== null) {
+                        itemNotes.textContent = "Notes:\n" + item.notes;
+                    }
+            itemBodyHeader.append(itemPriority);
+            itemBodyHeader.append(itemDue);
+            itemBody.append(itemBodyHeader);
+            itemBody.append(itemDesc);
+            itemBody.append(itemNotes);
+
+        itemLi.append(itemHeader);
+        itemLi.append(itemBody);
+
+        return itemLi;
+    }
+
+    itemView(item) {
+
+        const itemLi = document.createElement('li');
+              itemLi.dataset.itemId = item.id;
+              itemLi.classList.add(item.type, `priority-${item.priority.toLowerCase()}`);
+
+            const itemHeader = document.createElement('div');
+                  itemHeader.className = "item-header";
+                const itemCheckbox = document.createElement('input');
+                      itemCheckbox.type = 'checkbox';
+                      itemCheckbox.className = "item-complete";
+                      itemCheckbox.checked = item.complete;
+                      itemCheckbox.addEventListener('change', (e) => {
+
+                        const checkedItem = itemCheckbox.closest(`.${item.type}`);
+
+                        if(itemCheckbox.checked) {
+                            checkedItem.style.order = 1;
+                            checkedItem.style.filter = "brightness(0.5)";
+                            this.eventBus.publish(this.eventList.item_completed, { id: item.id, type: item.type });
+                        }else{
+                            checkedItem.style.order = 0;
+                            checkedItem.style.filter = "brightness(1)";
+                            this.eventBus.publish(this.eventList.item_incompleted, { id: item.id, type: item.type });
+                        }
+
+                    });
+                const itemDeleteBtn = document.createElement('button');
+                      itemDeleteBtn.value = item.id;
+                      itemDeleteBtn.textContent = 'X';
+                      itemDeleteBtn.className = 'delete-button';
+                      itemDeleteBtn.dataset.parentId = item.parentId;
+                      itemDeleteBtn.dataset.type = item.type;
+                      itemDeleteBtn.addEventListener('click', (e) => {
+                      
+                        const id = e.target.value;
+                        const parentId = e.target.dataset.parentId;
+                        const type = e.target.dataset.type;
+                        const parentDiv = e.target.closest('.' + type);
+                        
+                        if(parentDiv) {
+                            parentDiv.remove();
+                        }
+
+                        this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
+                      
+                    });
+                const itemEditBtn = document.createElement('button');
+                      itemEditBtn.className = "item-header-button";
+                      itemEditBtn.textContent = "\u270E";
+                      itemEditBtn.addEventListener('click', (e) => {
 
                         this.updateFormFields('item');
                         Object.entries(item).forEach(property => {
@@ -89,49 +199,77 @@ export default class View {
 
                     });
                 const itemTitle = document.createElement('span');
-                    itemTitle.className = "item-title";
-                    itemTitle.textContent = item.title;
-                const itemHamBtn = document.createElement('button');
-                    itemHamBtn.className = "item-collapse-button";
-                    itemHamBtn.textContent = "\u2261";
-                    itemHamBtn.addEventListener('click', (e) => {
+                      itemTitle.classList.add("item-title", "item-collapse-button");
+                      itemTitle.textContent = item.title;
+                      itemTitle.addEventListener('click', (e) => {
                         const parentLi = e.target.closest('li');
                         parentLi.querySelector('.item-body').classList.toggle('hidden');
                     });
             itemHeader.append(itemCheckbox);
             itemHeader.append(itemTitle);
-            itemHeader.append(itemHamBtn);
             itemHeader.append(itemEditBtn);
             itemHeader.append(itemDeleteBtn);
 
             const itemBody = document.createElement('div')
-                itemBody.classList.add("item-body", "hidden");
+                  itemBody.classList.add("item-body", "hidden");
                 const itemBodyHeader = document.createElement('div');
                     itemBodyHeader.className = "item-body-heading";
                     const itemDue = document.createElement('div');
-                        itemDue.className = "item-due-date";
-                        itemDue.textContent = this.getDate(item.due);
+                          itemDue.className = "item-due-date";
+                          itemDue.textContent = this.getDate(item.due);
                     const itemPriority = document.createElement('div');
-                        itemPriority.className = "list-priority";
-                        itemPriority.textContent = "Priority: " + item.priority;
+                          itemPriority.className = "list-priority";
+                          itemPriority.textContent = "Priority: " + item.priority;
                 const itemDesc = document.createElement('div');
-                    itemDesc.className = "item-description";
-                    if(item.desc !== "") {
+                      itemDesc.className = "item-description";
+                    if(item.desc !== "" && item.desc !== null) {
                         itemDesc.textContent = "Description:\n" + item.desc;
                     }
                 const itemNotes = document.createElement('div');
                     itemNotes.className = "item-notes";
-                    if(item.notes !== "") {
+                    if(item.notes !== "" && item.notes !== null) {
                         itemNotes.textContent = "Notes:\n" + item.notes;
                     }
+                const newSubitemBtn = document.createElement('button');
+                    newSubitemBtn.textContent = "+New Subitem";
+                    newSubitemBtn.className = "new-subitem";
+                    newSubitemBtn.addEventListener('click', (e) => {
+
+                        this.updateFormFields('item', 'New');
+                        const formModal = document.getElementById('form-modal');
+                            formModal.showModal();
+                        const type = document.getElementById('new-item-type');
+                            type.value = "subitem";
+                        const subtype = document.getElementById('new-item-subtype');
+                            subtype.value = null;
+                        const parentId = document.getElementById('new-item-parent-id');
+                            parentId.value = item.id;
+
+                    });
             itemBodyHeader.append(itemPriority);
             itemBodyHeader.append(itemDue);
             itemBody.append(itemBodyHeader);
             itemBody.append(itemDesc);
             itemBody.append(itemNotes);
+            itemBody.append(newSubitemBtn);
+
+            const itemContainer = document.createElement('ul');
+                itemContainer.className = "subitem-list";
+                itemContainer.id = `item-${item.id}-container`;
+
+            if(item.subItems !== undefined) {
+
+                item.subItems.forEach(item => {
+
+                    const itemLi = this.subitemView(item);
+                    itemContainer.append(itemLi);
+
+                });
+            }
 
         itemLi.append(itemHeader);
         itemLi.append(itemBody);
+        itemLi.append(itemContainer);
 
         return itemLi;
     }
@@ -139,16 +277,16 @@ export default class View {
     listView(list) {
 
             const listDiv = document.createElement('div');
-                listDiv.dataset.listId = list.id;
-                listDiv.classList.add(list.type, `priority-${list.priority.toLowerCase()}`);
+                  listDiv.dataset.listId = list.id;
+                  listDiv.classList.add(list.type, `priority-${list.priority.toLowerCase()}`);
 
                 const listHeader = document.createElement('div');
-                    listHeader.className = 'list-header';
+                      listHeader.className = 'list-header';
                     const listCheckbox = document.createElement('input');
-                        listCheckbox.type = 'checkbox';
-                        listCheckbox.className = "list-complete";
-                        listCheckbox.checked = list.complete;
-                        listCheckbox.addEventListener('change', (e) => {
+                          listCheckbox.type = 'checkbox';
+                          listCheckbox.className = "list-complete";
+                          listCheckbox.checked = list.complete;
+                          listCheckbox.addEventListener('change', (e) => {
 
                             const checkedItem = listCheckbox.closest('.list');
 
@@ -165,34 +303,34 @@ export default class View {
                         });
 
                     const listDeleteBtn = document.createElement('button');
-                        listDeleteBtn.value = list.id;
-                        listDeleteBtn.textContent = 'X';
-                        listDeleteBtn.classList.add('delete-button', 'list-header-button');
-                        listDeleteBtn.dataset.parentId = list.parentId;
-                        listDeleteBtn.dataset.type = list.type;
-                        listDeleteBtn.addEventListener('click', (e) => {
-                        const userConfirmed = confirm("Are you sure? Deletion cannot be undone.");
-                        if (userConfirmed) {
-                            const id = e.target.value;
-                            const parentId = e.target.dataset.parentId;
-                            const type = e.target.dataset.type;
-                            const parentDiv = e.target.closest('.' + type);
-                            
+                          listDeleteBtn.value = list.id;
+                          listDeleteBtn.textContent = 'X';
+                          listDeleteBtn.classList.add('delete-button', 'list-header-button');
+                          listDeleteBtn.dataset.parentId = list.parentId;
+                          listDeleteBtn.dataset.type = list.type;
+                          listDeleteBtn.addEventListener('click', (e) => {
+                           const userConfirmed = confirm("Are you sure? Deletion cannot be undone.");
+                              if (userConfirmed) {
+                                  const id = e.target.value;
+                                  const parentId = e.target.dataset.parentId;
+                                   const type = e.target.dataset.type;
+                                  const parentDiv = e.target.closest('.' + type);
+                             
 
-                                if(parentDiv) {
-                                    parentDiv.remove();
+                                      if(parentDiv) {
+                                          parentDiv.remove();
+                                      }
+  
+                                    this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
+                          
                                 }
-
-                                this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
-                        
-                        }
-                        });
+                          });
 
 
                     const editListBtn = document.createElement('button');
-                        editListBtn.className = "list-header-button";
-                        editListBtn.textContent = "\u270E";
-                        editListBtn.addEventListener('click', (e) => {
+                          editListBtn.className = "list-header-button";
+                          editListBtn.textContent = "\u270E";
+                          editListBtn.addEventListener('click', (e) => {
 
                             this.updateFormFields('list')
                             Object.entries(list).forEach(property => {
@@ -209,8 +347,8 @@ export default class View {
 
                         });
                     const listTitle = document.createElement('span');
-                        listTitle.className = "list-title";
-                        listTitle.textContent = list.title;
+                          listTitle.className = "list-title";
+                          listTitle.textContent = list.title;
                 listHeader.append(listCheckbox);
                 listHeader.append(listTitle);
                 listHeader.append(editListBtn);
@@ -252,9 +390,9 @@ export default class View {
             }
 
             const newItemBtn = document.createElement('button');
-                newItemBtn.textContent = "+New Item";
-                newItemBtn.className = "new-item";
-                newItemBtn.addEventListener('click', (e) => {
+                  newItemBtn.textContent = "+New Item";
+                  newItemBtn.className = "new-item";
+                  newItemBtn.addEventListener('click', (e) => {
 
                     this.updateFormFields('item', 'New');
                     const formModal = document.getElementById('form-modal');
