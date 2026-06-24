@@ -1,12 +1,15 @@
 import "./styles.css";
 import { toDoItem, toDoList, toDoProject, toDoSystem } from "./model-factories.js";
-import View from "./views.js";
+import { View, SubmitForm } from "./views.js";
 import { events, EventBus } from "./controller.js";
 import { format } from "date-fns";
 
 const pubSub = new EventBus();
 const ToDo = toDoSystem(pubSub, events);
-const listView = new View({ pubSub, events }, format);
+const form = document.getElementById('new-item-form');
+const formModal = document.getElementById('form-modal');
+const submitForm = new SubmitForm(form, formModal);
+const listView = new View({ pubSub, events }, format, submitForm);
 const date = format(new Date(), "PP");
 
 if(!ToDo.loadState()) {
@@ -34,7 +37,6 @@ if(!ToDo.loadState()) {
 
     console.log('Generated default content');
 }
-
 
 pubSub.subscribe(events.item_delete_request, (e) => { 
 
@@ -99,7 +101,7 @@ pubSub.subscribe(events.item_updated, (item) => {
 });
 
 pubSub.subscribe(events.item_added, (item) => {
-
+console.log(item);
     const formModal = document.getElementById('form-modal');
           formModal.close();
     

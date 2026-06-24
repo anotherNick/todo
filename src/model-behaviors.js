@@ -112,7 +112,7 @@ export const dataManager = (state) => ({
     exportAll: () => {
 
         const getItemsRecursively = (item, callback) => {
-            
+
             if(state.relationships[item.id] !== undefined) {
 
                 item.subItems = [];
@@ -188,16 +188,16 @@ export const persister = (state) => ({
     },
 
     loadState: () => {
-        
+
         const toDoState = localStorage.getItem('toDoState');
-        
+console.log(JSON.parse(toDoState));
         if(toDoState) { 
             Object.entries(JSON.parse(toDoState)).forEach(property => {
-
+console.log(property);
                 state[property[0]] = property[1];
 
             });
-
+console.log(state)
             // Reinstantiate Objects
             //Object.entries(state['subitem']).forEach(entry => {
 

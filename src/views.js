@@ -1,9 +1,10 @@
-export default class View {
+export class View {
 
-    constructor(eventHandler, dateFormatter) {
+    constructor(eventHandler, dateFormatter, submitForm) {
         this.eventHandler = eventHandler;
         this.activeProject = null;
         this.dateFormatter = dateFormatter;
+        this.submitForm = submitForm;
     }
 
     get eventBus() {
@@ -74,19 +75,9 @@ export default class View {
                       itemEditBtn.textContent = "\u270E";
                       itemEditBtn.addEventListener('click', (e) => {
 
-                        this.updateFormFields('subitem');
-                        Object.entries(item).forEach(property => {
-
-                            const input = document.querySelector(`[name="${property[0]}"]`);
-                            if(input !== null) { console.log(property[1]);
-                                input.value = property[1];
-                            }
-
-                        });
-
-                        const formModal = document.getElementById('form-modal');
-                            formModal.showModal();
-
+                        this.submitForm.updateInputValues(item);
+                        this.submitForm.showModal();
+                        
                     });
                 const itemTitle = document.createElement('span');
                       itemTitle.classList.add("subitem-title", "item-collapse-button");
@@ -184,19 +175,9 @@ export default class View {
                       itemEditBtn.textContent = "\u270E";
                       itemEditBtn.addEventListener('click', (e) => {
 
-                        this.updateFormFields('item');
-                        Object.entries(item).forEach(property => {
-
-                            const input = document.querySelector(`[name="${property[0]}"]`);
-                            if(input !== null) {
-                                input.value = property[1];
-                            }
-
-                        });
-
-                        const formModal = document.getElementById('form-modal');
-                            formModal.showModal();
-
+                        this.submitForm.updateInputValues(item);
+                        this.submitForm.showModal();
+                    
                     });
                 const itemTitle = document.createElement('span');
                       itemTitle.classList.add("item-title", "item-collapse-button");
@@ -235,17 +216,10 @@ export default class View {
                     newSubitemBtn.className = "new-subitem";
                     newSubitemBtn.addEventListener('click', (e) => {
 
-                        this.updateFormFields('item', 'New');
-                        const formModal = document.getElementById('form-modal');
-                            formModal.showModal();
-                        const type = document.getElementById('new-item-type');
-                            type.value = "subitem";
-                        const subtype = document.getElementById('new-item-subtype');
-                            subtype.value = null;
-                        const parentId = document.getElementById('new-item-parent-id');
-                            parentId.value = item.id;
-
-                    });
+                        this.submitForm.updateInputValues({ type: 'item', subtype: null, parentId: item.id, }, 'New');
+                        this.submitForm.showModal();
+                    
+                });
             itemBodyHeader.append(itemPriority);
             itemBodyHeader.append(itemDue);
             itemBody.append(itemBodyHeader);
@@ -332,18 +306,8 @@ export default class View {
                           editListBtn.textContent = "\u270E";
                           editListBtn.addEventListener('click', (e) => {
 
-                            this.updateFormFields('list')
-                            Object.entries(list).forEach(property => {
-
-                                const input = document.querySelector(`input[name="${property[0]}"]`);
-                                if(input !== null) {
-                                    input.value = property[1];
-                                }
-
-                            });
-
-                            const formModal = document.getElementById('form-modal');
-                                formModal.showModal();
+                            this.submitForm.updateInputValues(list);
+                            this.submitForm.showModal();
 
                         });
                     const listTitle = document.createElement('span');
@@ -394,15 +358,8 @@ export default class View {
                   newItemBtn.className = "new-item";
                   newItemBtn.addEventListener('click', (e) => {
 
-                    this.updateFormFields('item', 'New');
-                    const formModal = document.getElementById('form-modal');
-                        formModal.showModal();
-                    const type = document.getElementById('new-item-type');
-                        type.value = "item";
-                    const subtype = document.getElementById('new-item-subtype');
-                        subtype.value = "subitem";
-                    const parentId = document.getElementById('new-item-parent-id');
-                        parentId.value = list.id;
+                    this.submitForm.updateInputValues({ type: 'item', subtype: 'subitem', parentId: list.id, }, 'New');
+                    this.submitForm.showModal();
 
                 });
 
@@ -468,15 +425,8 @@ export default class View {
             newListBtn.textContent = "+New List";
             newListBtn.addEventListener('click', (e) => {
 
-                this.updateFormFields('list', 'New');
-                const formModal = document.getElementById('form-modal');
-                    formModal.showModal();
-                const type = document.getElementById('new-item-type');
-                    type.value = "list";
-                const subtype = document.getElementById('new-item-subtype');
-                    subtype.value = "item";
-                const parentId = document.getElementById('new-item-parent-id');
-                    parentId.value = project.id;
+                this.submitForm.updateInputValues({ type: 'list', subtype: 'item', parentId: project.id, }, 'New');
+                this.submitForm.showModal();
 
             });
         
@@ -557,30 +507,34 @@ export default class View {
             newProjectBtn.id = "new-project";
             newProjectBtn.addEventListener('click', (e) => {
 
-                this.updateFormFields('project', 'New');
-                const formModal = document.getElementById('form-modal');
-                    formModal.showModal();
-                const type = document.getElementById('new-item-type');
-                    type.value = "project";
-                const subtype = document.getElementById('new-item-subtype');
-                    subtype.value = "list";
+                this.submitForm.updateInputValues({ type: 'project', subtype: 'list' }, 'New');
+                this.submitForm.showModal();
 
             });
         projectTabs.append(newProjectBtn);
     }
+}
 
-    updateFormFields(type, action = "Update") {
+export class SubmitForm {
 
-        const newItemForm = document.getElementById('new-item-form');
-              newItemForm.reset();
+    constructor(form, modal) {
+
+        this.form = form;
+        this.modal = modal;
+
+    }
+
+    showValidFields(item, action) {
+
+              this.form.reset();
         
-        const hiddenInputs = newItemForm.querySelectorAll('input[type="hidden"]');
+        const hiddenInputs = this.form.querySelectorAll('input[type="hidden"]');
               hiddenInputs.forEach(input => {
                 input.value = '';
               });
         
         const formTitle = document.getElementById('form-title');
-              formTitle.textContent =  `${action} ${type.charAt(0).toUpperCase()}${type.slice(1)}`;
+              formTitle.textContent =  `${action} ${item.type.charAt(0).toUpperCase()}${item.type.slice(1)}`;
     
         const itemFields = document.querySelectorAll('.item-fields');
               itemFields.forEach(fieldset => {
@@ -590,7 +544,7 @@ export default class View {
 
               });
 
-        const fieldType = `.${type}-fields`;
+        const fieldType = `.${item.type}-fields`;
         const validFields = document.querySelectorAll(fieldType);
               validFields.forEach(fieldset => {
 
@@ -600,4 +554,31 @@ export default class View {
               });
 
     }
+
+    updateInputValues(item, action = "Update") {
+
+        this.showValidFields(item, action);
+        Object.entries(item).forEach(property => {
+// Need to set radio button correctly instead of ignoring it.
+            const input = document.querySelector(`[name="${property[0]}"]`);
+            if(input !== null && property[0] !== "priority") {
+                input.value = property[1];
+            }
+
+        });
+
+    }
+
+    showModal() {
+
+        this.modal.showModal();
+
+    }
+
+    closeModal() {
+
+        this.modal.close();
+
+    }
+
 }
