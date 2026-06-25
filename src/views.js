@@ -216,7 +216,7 @@ export class View {
                     newSubitemBtn.className = "new-subitem";
                     newSubitemBtn.addEventListener('click', (e) => {
 
-                        this.submitForm.updateInputValues({ type: 'item', subtype: null, parentId: item.id, }, 'New');
+                        this.submitForm.updateInputValues({ type: 'subitem', subtype: null, parentId: item.id, }, 'New');
                         this.submitForm.showModal();
                     
                 });

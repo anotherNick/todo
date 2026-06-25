@@ -101,7 +101,7 @@ pubSub.subscribe(events.item_updated, (item) => {
 });
 
 pubSub.subscribe(events.item_added, (item) => {
-console.log(item);
+
     const formModal = document.getElementById('form-modal');
           formModal.close();
     
