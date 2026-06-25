@@ -31,45 +31,8 @@ export class View {
 
             const itemHeader = document.createElement('div');
                   itemHeader.className = "subitem-header";
-                const itemCheckbox = document.createElement('input');
-                      itemCheckbox.type = 'checkbox';
-                      itemCheckbox.className = "subitem-complete";
-                      itemCheckbox.checked = item.complete;
-                      itemCheckbox.addEventListener('change', (e) => {
-
-                        const checkedItem = itemCheckbox.closest(`.${item.type}`);
-
-                        if(itemCheckbox.checked) {
-                            checkedItem.style.order = 1;
-                            checkedItem.style.filter = "brightness(0.5)";
-                            this.eventBus.publish(this.eventList.item_completed, { id: item.id, type: item.type });
-                        }else{
-                            checkedItem.style.order = 0;
-                            checkedItem.style.filter = "brightness(1)";
-                            this.eventBus.publish(this.eventList.item_incompleted, { id: item.id, type: item.type });
-                        }
-
-                    });
-                const itemDeleteBtn = document.createElement('button');
-                      itemDeleteBtn.value = item.id;
-                      itemDeleteBtn.textContent = 'X';
-                      itemDeleteBtn.className = 'subitem-delete-button';
-                      itemDeleteBtn.dataset.parentId = item.parentId;
-                      itemDeleteBtn.dataset.type = item.type;
-                      itemDeleteBtn.addEventListener('click', (e) => {
-                      
-                        const id = e.target.value;
-                        const parentId = e.target.dataset.parentId;
-                        const type = e.target.dataset.type;
-                        const parentDiv = e.target.closest('.' + type);
-                        
-                        if(parentDiv) {
-                            parentDiv.remove();
-                        }
-
-                        this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
-                      
-                    });
+                const itemCheckbox = this.newCheckbox(item);
+                const itemDeleteBtn = this.newDeleteButton(item, false);
                 const itemEditBtn = document.createElement('button');
                       itemEditBtn.className = "subitem-header-button";
                       itemEditBtn.textContent = "\u270E";
@@ -131,45 +94,8 @@ export class View {
 
             const itemHeader = document.createElement('div');
                   itemHeader.className = "item-header";
-                const itemCheckbox = document.createElement('input');
-                      itemCheckbox.type = 'checkbox';
-                      itemCheckbox.className = "item-complete";
-                      itemCheckbox.checked = item.complete;
-                      itemCheckbox.addEventListener('change', (e) => {
-
-                        const checkedItem = itemCheckbox.closest(`.${item.type}`);
-
-                        if(itemCheckbox.checked) {
-                            checkedItem.style.order = 1;
-                            checkedItem.style.filter = "brightness(0.5)";
-                            this.eventBus.publish(this.eventList.item_completed, { id: item.id, type: item.type });
-                        }else{
-                            checkedItem.style.order = 0;
-                            checkedItem.style.filter = "brightness(1)";
-                            this.eventBus.publish(this.eventList.item_incompleted, { id: item.id, type: item.type });
-                        }
-
-                    });
-                const itemDeleteBtn = document.createElement('button');
-                      itemDeleteBtn.value = item.id;
-                      itemDeleteBtn.textContent = 'X';
-                      itemDeleteBtn.className = 'delete-button';
-                      itemDeleteBtn.dataset.parentId = item.parentId;
-                      itemDeleteBtn.dataset.type = item.type;
-                      itemDeleteBtn.addEventListener('click', (e) => {
-                      
-                        const id = e.target.value;
-                        const parentId = e.target.dataset.parentId;
-                        const type = e.target.dataset.type;
-                        const parentDiv = e.target.closest('.' + type);
-                        
-                        if(parentDiv) {
-                            parentDiv.remove();
-                        }
-
-                        this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
-                      
-                    });
+                const itemCheckbox = this.newCheckbox(item);
+                const itemDeleteBtn = this.newDeleteButton(item, false);
                 const itemEditBtn = document.createElement('button');
                       itemEditBtn.className = "item-header-button";
                       itemEditBtn.textContent = "\u270E";
@@ -256,50 +182,9 @@ export class View {
 
                 const listHeader = document.createElement('div');
                       listHeader.className = 'list-header';
-                    const listCheckbox = document.createElement('input');
-                          listCheckbox.type = 'checkbox';
-                          listCheckbox.className = "list-complete";
-                          listCheckbox.checked = list.complete;
-                          listCheckbox.addEventListener('change', (e) => {
-
-                            const checkedItem = listCheckbox.closest('.list');
-
-                            if(listCheckbox.checked) {
-                                checkedItem.style.order = 1;
-                                checkedItem.style.filter = "brightness(0.5)";
-                                this.eventBus.publish(this.eventList.item_completed, { id: list.id, type: list.type });
-                            }else{
-                                checkedItem.style.order = 0;
-                                checkedItem.style.filter = "brightness(1)";
-                                this.eventBus.publish(this.eventList.item_incompleted, { id: list.id, type: list.type });
-                            }
-
-                        });
-
-                    const listDeleteBtn = document.createElement('button');
-                          listDeleteBtn.value = list.id;
-                          listDeleteBtn.textContent = 'X';
-                          listDeleteBtn.classList.add('delete-button', 'list-header-button');
-                          listDeleteBtn.dataset.parentId = list.parentId;
-                          listDeleteBtn.dataset.type = list.type;
-                          listDeleteBtn.addEventListener('click', (e) => {
-                           const userConfirmed = confirm("Are you sure? Deletion cannot be undone.");
-                              if (userConfirmed) {
-                                  const id = e.target.value;
-                                  const parentId = e.target.dataset.parentId;
-                                   const type = e.target.dataset.type;
-                                  const parentDiv = e.target.closest('.' + type);
-                             
-
-                                      if(parentDiv) {
-                                          parentDiv.remove();
-                                      }
-  
-                                    this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
-                          
-                                }
-                          });
-
+                    const listCheckbox = this.newCheckbox(list);
+                    const listDeleteBtn = this.newDeleteButton(list);
+                          listDeleteBtn.classList.add('list-header-button');
 
                     const editListBtn = document.createElement('button');
                           editListBtn.className = "list-header-button";
@@ -382,20 +267,17 @@ export class View {
                 projectHeaderBtns.classList.add('project-header-buttons');
         
                 const deleteProjectBtn = document.createElement('button');
-                deleteProjectBtn.id = "delete-project";
-                deleteProjectBtn.textContent = "Delete This Project";
-                deleteProjectBtn.value = project.id;
-                deleteProjectBtn.classList.add('delete-button');
-                deleteProjectBtn.dataset.parentId = project.parentId;
-                deleteProjectBtn.dataset.type = project.type;
-                deleteProjectBtn.addEventListener('click', (e) => {
+                      deleteProjectBtn.id = "delete-project";
+                      deleteProjectBtn.textContent = "Delete This Project";
+                      deleteProjectBtn.classList.add('delete-button');
+                      deleteProjectBtn.addEventListener('click', (e) => {
                 const userConfirmed = confirm("Are you sure? Deletion cannot be undone.");
                     
                   if (userConfirmed) {
 
-                    const id = e.target.value;
-                    const parentId = e.target.dataset.parentId;
-                    const type = e.target.dataset.type;
+                    const id = project.id;
+                    const parentId = project.parentId;
+                    const type = project.type;
                     const parentDiv = e.target.closest('.list-container');
                     
                     if(parentDiv) {
@@ -421,9 +303,9 @@ export class View {
         
         
             const newListBtn = document.createElement('button');
-            newListBtn.id = "new-list";
-            newListBtn.textContent = "+New List";
-            newListBtn.addEventListener('click', (e) => {
+                  newListBtn.id = "new-list";
+                  newListBtn.textContent = "+New List";
+                  newListBtn.addEventListener('click', (e) => {
 
                 this.submitForm.updateInputValues({ type: 'list', subtype: 'item', parentId: project.id, }, 'New');
                 this.submitForm.showModal();
@@ -475,21 +357,98 @@ export class View {
 
     }
 
+    toggleComplete(checkbox, item) {
+
+        const checkedItem = checkbox.closest(`.${item.type}`);
+
+        if(checkbox.checked) {
+            checkedItem.style.order = 1;
+            checkedItem.style.filter = "brightness(0.5)";
+            this.eventBus.publish(this.eventList.item_completed, { id: item.id, type: item.type });
+        }else{
+            checkedItem.style.order = 0;
+            checkedItem.style.filter = "brightness(1)";
+            this.eventBus.publish(this.eventList.item_incompleted, { id: item.id, type: item.type });
+        }
+
+    }
+
+    deleteItem(item, e) {
+
+        const id = item.id;
+        const parentId = item.parentId;
+        const type = item.type;
+        const parentDiv = e.target.closest('.' + type);
+        
+        if(parentDiv) {
+            parentDiv.remove();
+        }
+
+        this.eventBus.publish(this.eventList.item_delete_request, { id, type, parentId });
+
+    }
+
+    newCheckbox(item) {
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = `${item.type}-complete`;
+            checkbox.checked = item.complete;
+            checkbox.addEventListener('change', (e) => {
+
+                this.toggleComplete(checkbox, item);
+        
+            });
+
+            return checkbox;
+
+
+    }
+
+    newDeleteButton(item, doConfirm = true) {
+
+        const itemDeleteBtn = document.createElement('button');
+              itemDeleteBtn.textContent = 'X';
+              itemDeleteBtn.className = `${item.type}-delete-button`;
+              itemDeleteBtn.addEventListener('click', (e) => {
+        
+                if(doConfirm) {
+
+                    const userConfirmed = confirm("Are you sure? Deletion cannot be undone.");
+
+                    if (userConfirmed) {
+
+                        this.deleteItem(item, e);
+                    
+                    }
+
+                } else {
+
+                    this.deleteItem(item, e);
+
+                }
+
+              });
+
+        return itemDeleteBtn;
+
+    }
+
     renderAll(data) {
    
         const toDoData = JSON.parse(data);
         const projectTabs = document.querySelector('#projects');
-            projectTabs.textContent = "";
+              projectTabs.textContent = "";
         const projectContainer = document.querySelector('#container');
-            projectContainer.textContent = "";
+              projectContainer.textContent = "";
 
         toDoData.forEach(project => {
             const projectBtn = document.createElement('button');
-                projectBtn.textContent = project.title;
-                projectBtn.id = `project-${project.id}-button`;
-                projectBtn.dataset.projectId = project.id;
-                projectBtn.classList.add('project-buttons');
-                projectBtn.addEventListener('click', (e) =>{
+                  projectBtn.textContent = project.title;
+                  projectBtn.id = `project-${project.id}-button`;
+                  projectBtn.dataset.projectId = project.id;
+                  projectBtn.classList.add('project-buttons');
+                  projectBtn.addEventListener('click', (e) =>{
                     this.updateActiveProject(e.target.dataset.projectId);
                 })
             projectTabs.append(projectBtn);
@@ -503,9 +462,9 @@ export class View {
         });
         
         const newProjectBtn = document.createElement('button');
-            newProjectBtn.textContent = "+New Project";
-            newProjectBtn.id = "new-project";
-            newProjectBtn.addEventListener('click', (e) => {
+              newProjectBtn.textContent = "+New Project";
+              newProjectBtn.id = "new-project";
+              newProjectBtn.addEventListener('click', (e) => {
 
                 this.submitForm.updateInputValues({ type: 'project', subtype: 'list' }, 'New');
                 this.submitForm.showModal();
