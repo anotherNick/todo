@@ -96,6 +96,21 @@ export const dataManager = (state) => ({
     
     },
 
+    getParentType: (type) => {
+
+        switch(type) {
+            case "subitem":
+                return "item";
+            case "item":
+                return "list";
+            case "list":
+                return "project";
+            default:
+                return null;
+            }
+
+    },
+
     exportAll: () => {
 
         const getItemsRecursively = (item, callback) => {

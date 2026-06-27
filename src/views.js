@@ -162,6 +162,12 @@ export class View {
 
     }
 
+    subitemView(item) {
+
+        return this.itemView(item);
+
+    }
+
     itemView(item) {
 
         const type = item.type;
@@ -333,24 +339,6 @@ export class View {
 
         const projectContainer = document.querySelector('#container');
 
-        const projectTabs = document.querySelector('#projects');
-
-            const projectBtn = document.createElement('button');
-                  projectBtn.textContent = project.title;
-                  projectBtn.id = `project-${project.id}-button`;
-                  projectBtn.classList.add('project-buttons');
-                  projectBtn.addEventListener('click', (e) =>{
-                    this.updateActiveProject(project.id);
-                  });
-
-        projectTabs.append(projectBtn);
-
-        this.activeProject ??= project.id;
-
-        if(this.activeProject == project.id){
-            this.updateActiveProject(project.id);
-        }
-
         const listContainer = document.createElement('div');
               listContainer.id = `project-${project.id}-container`;
               listContainer.classList.add('list-container', 'hidden');
@@ -412,6 +400,26 @@ export class View {
         }
 
         projectContainer.append(listContainer);
+        
+        const projectTabs = document.querySelector('#projects');
+
+            const projectBtn = document.createElement('button');
+                  projectBtn.textContent = project.title;
+                  projectBtn.dataset.projectId = project.id;
+                  projectBtn.id = `project-${project.id}-button`;
+                  projectBtn.classList.add('project-buttons');
+                  projectBtn.addEventListener('click', (e) =>{
+                    this.updateActiveProject(project.id);
+                  });
+
+        projectTabs.append(projectBtn);
+
+        this.activeProject ??= project.id;
+
+        if(this.activeProject == project.id){
+            this.updateActiveProject(project.id);
+        }
+
     }
 
     renderAll(data) {
