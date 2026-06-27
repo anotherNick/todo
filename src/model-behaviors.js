@@ -5,11 +5,13 @@ export const dataManager = (state) => ({
     addItem: (item) => {
 
         item.id = state.index;
-        item.parentId = parseInt(item.parentId, 10);
         state.index++;
         state[item.type][item.id] = item;
 
         if(item.parentId !== undefined) {
+        
+            item.parentId = parseInt(item.parentId, 10);
+
             if(state.relationships[item.parentId] === undefined){
                 state.relationships[item.parentId] = [];
             }
@@ -84,7 +86,7 @@ export const dataManager = (state) => ({
 
     getItem: (type, id) => { 
 
-            return state[type][id];
+        return state[type][id];
     
     },
     
@@ -92,21 +94,6 @@ export const dataManager = (state) => ({
     
         return state[type];
     
-    },
-
-    getParentType: (type) => {
-
-        switch(type) {
-            case "subitem":
-                return "item";
-            case "item":
-                return "list";
-            case "list":
-                return "project";
-            default:
-                return null;
-            }
-
     },
 
     exportAll: () => {
@@ -165,14 +152,30 @@ export const persister = (state) => ({
 
         const toDoState = {};
 
-        Object.entries(state).forEach(property => {
-            
-            // eventHandler cannot be stringified
-            if(property[0] !== 'eventHandler') {
-                toDoState[property[0]] = property[1];
+            for(const [key, value] of Object.entries(state)) {
+
+                if(key === 'eventHandler') { 
+                    
+                    continue;
+                
+                } else if(key === "index") {
+
+                    toDoState[key] = value;
+
+                } else {
+
+                    toDoState[key] = {};
+                    
+                    for(const [key2, value2] of Object.entries(value)) {
+
+                        toDoState[key][key2] = value2;
+
+                    }
+
+                }
+
             }
-        
-        });
+            
             try {
 
                 localStorage.setItem('toDoState', JSON.stringify(toDoState));
@@ -189,58 +192,34 @@ export const persister = (state) => ({
 
     loadState: () => {
 
-        const toDoState = localStorage.getItem('toDoState');
+        const toDoState = JSON.parse(localStorage.getItem('toDoState'));
 
         if(toDoState) { 
-            Object.entries(JSON.parse(toDoState)).forEach(property => {
+            
+            for(const [key, value] of Object.entries(toDoState)) {
 
-                state[property[0]] = property[1];
+                if(key === "index" || key === "relationships") {
 
-            });
+                    state[key] = value;
 
-            // Reinstantiate Objects
-            //Object.entries(state['subitem']).forEach(entry => {
+                } else if(key == "") {
+                
+                    continue;
+                
+                } else {
+                
+                    state[key] = {};
 
-                //const flatItem = entry[1];
-                //const newItem = toDoItem(flatItem.title, flatItem.parentId, flatItem.due, flatItem.desc, flatItem.priority, flatItem.notes, flatItem.complete);
-                //state['item'][newItem.id] = newItem;
+                    for(const [key2, value2] of Object.entries(value)) {
 
-            //});
+                        state[key][key2] = value2;
 
-            Object.entries(state['item']).forEach(entry => {
+                    }
 
-                const flatItem = entry[1];
-                const newItem = toDoItem(flatItem.title, 
-                                         flatItem.parentId, 
-                                         flatItem.due, 
-                                         flatItem.desc, 
-                                         flatItem.priority, 
-                                         flatItem.notes, 
-                                         flatItem.complete);
-                state['item'][newItem.id] = newItem;
+                }
 
-            });
-
-            Object.entries(state['list']).forEach(entry => {
-
-                const flatItem = entry[1];
-                const newItem = toDoList(flatItem.title, 
-                                         flatItem.parentId, 
-                                         flatItem.due, 
-                                         flatItem.priority, 
-                                         flatItem.complete);
-                state['list'][newItem.id] = newItem;
-
-            });
-
-            Object.entries(state['project']).forEach(entry => {
-
-                const flatItem = entry[1];
-                const newItem = toDoProject(flatItem.title);
-                state['project'][newItem.id] = newItem;
-
-            });
-
+           } 
+        
             return true;
 
         }
