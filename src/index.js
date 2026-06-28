@@ -92,9 +92,9 @@ pubSub.subscribe(events.item_updated, (item) => {
           formModal.close();
 
     const viewType = item.type + "View";
-    const newElement = listView[viewType](item);
-    const selector = `[data-${item.type}-id="${item.id}"]`;
-    const oldElement = document.querySelector(selector);
+    const newElement = listView[viewType](item); console.log(newElement)
+    const selector = `[data-${item.type}-id="${item.id}"]`;console.log(selector)
+    const oldElement = document.querySelector(selector); console.log(oldElement)
 
     oldElement.replaceWith(newElement);
 
@@ -174,10 +174,10 @@ const checkedItems = document.querySelectorAll('.item-complete');
         const checkedItem = checkbox.closest('.item');
         
         if(checkbox.checked) {
-            checkedItem.style.order = 1;
+            checkedItem.style.order = 10;
             checkedItem.style.filter = "brightness(0.5)";
         }else{
-            checkedItem.style.order = 0;
+            checkedItem.style.order = "";
             checkedItem.style.filter = "brightness(1)";
         }
 
@@ -190,10 +190,10 @@ const checkedLists = document.querySelectorAll('.list-complete');
         const checkedItem = checkbox.closest('.list');
         
         if(checkbox.checked) {
-            checkedItem.style.order = 1;
+            checkedItem.style.order = 10;
             checkedItem.style.filter = "brightness(0.5)";
         }else{
-            checkedItem.style.order = 0;
+            checkedItem.style.order = "";
             checkedItem.style.filter = "brightness(1)";
         }
 

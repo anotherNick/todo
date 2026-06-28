@@ -58,11 +58,11 @@ export class View {
         const checkedItem = checkbox.closest(`.${item.type}`);
 
         if(checkbox.checked) {
-            checkedItem.style.order = 1;
+            checkedItem.style.order = 10;
             checkedItem.style.filter = "brightness(0.5)";
             this.eventBus.publish(this.eventList.item_completed, { id: item.id, type: item.type });
         }else{
-            checkedItem.style.order = 0;
+            checkedItem.style.order = "";
             checkedItem.style.filter = "brightness(1)";
             this.eventBus.publish(this.eventList.item_incompleted, { id: item.id, type: item.type });
         }
@@ -173,11 +173,11 @@ export class View {
         const type = item.type;
 
         const itemLi = document.createElement('li');
-              itemLi.dataset.itemId = item.id;
+              itemLi.dataset[`${type}Id`] = item.id;
               itemLi.classList.add(type, `priority-${item.priority.toLowerCase()}`);
 
             const itemHeader = document.createElement('div');
-                  itemHeader.className = "item-header";
+                  itemHeader.className = `${type}-header`;
 
                 const itemCheckbox = this.newCheckbox(item);
                 const itemDeleteBtn = this.newDeleteButton(item, false);
