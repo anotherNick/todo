@@ -48,16 +48,6 @@ ul {
 
 }
 
-#load-save-buttons {
-
-    display: flex;
-    justify-content: flex-end;
-    gap: 16px;
-    margin-right: 16px;
-    margin-top: 16px;
-
-}
-
 nav button {
 
     margin: 0 4px;

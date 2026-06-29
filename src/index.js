@@ -4,15 +4,17 @@ import { View, SubmitForm } from "./views.js";
 import { events, EventBus } from "./controller.js";
 import { format } from "date-fns";
 
-const pubSub = new EventBus();
-const ToDo = toDoSystem(pubSub, events);
 const form = document.getElementById('new-item-form');
 const formModal = document.getElementById('form-modal');
+
+const pubSub = new EventBus();
+const ToDo = toDoSystem(pubSub, events);
 const submitForm = new SubmitForm(form, formModal);
 const listView = new View({ pubSub, events }, format, submitForm);
-const date = format(new Date(), "PP");
 
 if(!ToDo.loadState()) {
+    const date = format(new Date(), "PP");
+    
     const project = toDoProject('Default Project');
     const secondProject = toDoProject('Another Project');
 
@@ -153,13 +155,6 @@ const newItemForm = document.getElementById('new-item-form');
 
     });
 
-const loadDataBtn = document.getElementById('load-data');
-      loadDataBtn.addEventListener('click', () => {
-
-        pubSub.publish(events.data_load_request);
-
-    });
-
 const formCloseBtn = document.getElementById('form-modal-close');
       formCloseBtn.addEventListener('click', () => {
 
@@ -167,6 +162,21 @@ const formCloseBtn = document.getElementById('form-modal-close');
               formModal.close();
 
     });
+
+const checkedSubitems = document.querySelectorAll('.subitem-complete');
+      checkedSubitems.forEach(checkbox => {
+
+        const checkedItem = checkbox.closest('.subitem');
+        
+        if(checkbox.checked) {
+            checkedItem.style.order = 10;
+            checkedItem.style.filter = "brightness(0.5)";
+        }else{
+            checkedItem.style.order = "";
+            checkedItem.style.filter = "brightness(1)";
+        }
+
+      });
 
 const checkedItems = document.querySelectorAll('.item-complete');
       checkedItems.forEach(checkbox => {
