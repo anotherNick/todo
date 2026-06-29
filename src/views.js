@@ -488,11 +488,21 @@ export class SubmitForm {
     updateInputValues(item, action = "Update") {
 
         this.showValidFields(item, action);
+        
         Object.entries(item).forEach(property => {
-// Need to set radio button correctly instead of ignoring it.
+            
             const input = document.querySelector(`[name="${property[0]}"]`);
-            if(input !== null && property[0] !== "priority") {
+            
+            if(property[0] === "priority"){
+                
+                const radio = document.querySelector(`input[value="${property[1]}"]`);
+                      radio.checked = true;
+                
+            } else if(input !== null) {
+            
+                
                 input.value = property[1];
+            
             }
 
         });
