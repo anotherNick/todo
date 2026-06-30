@@ -90,13 +90,12 @@ pubSub.subscribe(events.item_incompleted, details => {
 
 pubSub.subscribe(events.item_updated, (item) => {
 
-    const formModal = document.getElementById('form-modal');
-          formModal.close();
+    submitForm.closeModal();
 
     const viewType = item.type + "View";
-    const newElement = listView[viewType](item); console.log(newElement)
-    const selector = `[data-${item.type}-id="${item.id}"]`;console.log(selector)
-    const oldElement = document.querySelector(selector); console.log(oldElement)
+    const newElement = listView[viewType](item);
+    const selector = `[data-${item.type}-id="${item.id}"]`;
+    const oldElement = document.querySelector(selector);
 
     oldElement.replaceWith(newElement);
 
@@ -104,8 +103,7 @@ pubSub.subscribe(events.item_updated, (item) => {
 
 pubSub.subscribe(events.item_added, (item) => {
 
-    const formModal = document.getElementById('form-modal');
-          formModal.close();
+    submitForm.closeModal();
     
     if(item.type != 'project'){
         const viewType = item.type + "View";
@@ -129,37 +127,30 @@ pubSub.subscribe(events.item_added, (item) => {
 const toDoData = ToDo.exportAll();
 listView.renderAll(toDoData);
 
-const newItemForm = document.getElementById('new-item-form');
-      newItemForm.addEventListener('submit', e => {
+form.addEventListener('submit', e => {
 
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const entries = Object.fromEntries(formData);
-        
-        if(entries.id != ''){
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const entries = Object.fromEntries(formData);
+    
+    if(entries.id != ''){
 
-            pubSub.publish(events.item_update_request, entries);
-        
-        } else {
+        pubSub.publish(events.item_update_request, entries);
+    
+    } else {
 
-            pubSub.publish(events.item_add_request, entries);
+        pubSub.publish(events.item_add_request, entries);
 
-        }
+    }
 
-        newItemForm.reset();
-        const hiddenInputs = newItemForm.querySelectorAll('input[type="hidden"]');
-              hiddenInputs.forEach(input => {
-                input.value = '';
-            });
+    submitForm.reset();
 
-
-    });
+});
 
 const formCloseBtn = document.getElementById('form-modal-close');
       formCloseBtn.addEventListener('click', () => {
 
-        const formModal = document.getElementById('form-modal');
-              formModal.close();
+        submitForm.closeModal();
 
     });
 

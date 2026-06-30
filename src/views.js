@@ -509,6 +509,16 @@ export class SubmitForm {
 
     }
 
+    reset() {
+
+        this.form.reset();
+        const hiddenInputs = this.form.querySelectorAll('input[type="hidden"]');
+              hiddenInputs.forEach(input => {
+                input.value = '';
+            });
+
+    }
+
     showModal() {
 
         this.modal.showModal();
