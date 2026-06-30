@@ -1,4 +1,4 @@
-export class View {
+export default class ListView {
 
     constructor(eventHandler, dateFormatter, submitForm) {
         this.eventHandler = eventHandler;
@@ -66,6 +66,31 @@ export class View {
             checkedItem.style.filter = "brightness(1)";
             this.eventBus.publish(this.eventList.item_incompleted, { id: item.id, type: item.type });
         }
+
+    }
+
+    styleCompletedItems() {
+
+        const types = ['subitem', 'item', 'list'];
+
+        types.forEach(type => {
+
+            const checkedItems = document.querySelectorAll(`.${type}-complete`);
+                  checkedItems.forEach(checkbox => {
+
+                    const checkedItem = checkbox.closest(`.${type}`);
+                    
+                    if(checkbox.checked) {
+                        checkedItem.style.order = 10;
+                        checkedItem.style.filter = "brightness(0.5)";
+                    }else{
+                        checkedItem.style.order = "";
+                        checkedItem.style.filter = "brightness(1)";
+                    }
+
+                });
+
+        });
 
     }
 
@@ -443,92 +468,4 @@ export class View {
         projectTabs.append(newProjectBtn);
         
     }
-}
-
-export class SubmitForm {
-
-    constructor(form, modal) {
-
-        this.form = form;
-        this.modal = modal;
-
-    }
-
-    showValidFields(item, action) {
-
-              this.form.reset();
-        
-        const hiddenInputs = this.form.querySelectorAll('input[type="hidden"]');
-              hiddenInputs.forEach(input => {
-                input.value = '';
-              });
-        
-        const formTitle = document.getElementById('form-title');
-              formTitle.textContent =  `${action} ${item.type.charAt(0).toUpperCase()}${item.type.slice(1)}`;
-    
-        const itemFields = document.querySelectorAll('.item-fields');
-              itemFields.forEach(fieldset => {
-
-                fieldset.classList.add('hidden');
-                fieldset.disabled = true;
-
-              });
-
-        const fieldType = `.${item.type}-fields`;
-        const validFields = document.querySelectorAll(fieldType);
-              validFields.forEach(fieldset => {
-
-                fieldset.classList.remove('hidden');
-                fieldset.disabled = false;
-
-              });
-
-    }
-
-    updateInputValues(item, action = "Update") {
-
-        this.showValidFields(item, action);
-        
-        Object.entries(item).forEach(property => {
-            
-            const input = document.querySelector(`[name="${property[0]}"]`);
-            
-            if(property[0] === "priority"){
-                
-                const radio = document.querySelector(`input[value="${property[1]}"]`);
-                      radio.checked = true;
-                
-            } else if(input !== null) {
-            
-                
-                input.value = property[1];
-            
-            }
-
-        });
-
-    }
-
-    reset() {
-
-        this.form.reset();
-        const hiddenInputs = this.form.querySelectorAll('input[type="hidden"]');
-              hiddenInputs.forEach(input => {
-                input.value = '';
-            });
-
-    }
-
-    showModal() {
-
-        this.modal.showModal();
-
-    }
-
-    closeModal() {
-
-        this.modal.close();
-
-    }
-
 }
