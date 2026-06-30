@@ -1,5 +1,5 @@
 import "./styles.css";
-import { toDoItem, toDoList, toDoProject, toDoSystem } from "./model-factories.js";
+import { toDoItem, toDoList, toDoProject, toDoSystem } from "./models/model-factories.js";
 import ListView from "./views/ListView.js";
 import FormView from "./views/FormView.js"
 import { events, EventBus } from "./controllers/PubSub.js";
