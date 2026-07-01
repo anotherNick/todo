@@ -19,7 +19,7 @@ export const dataManager = (state) => ({
             state.relationships[item.parentId].push(item.id);
         }
 
-        state.eventHandler.bus.publish(state.eventHandler.events.item_added, item);
+        return item;
 
     },
 
@@ -35,15 +35,15 @@ export const dataManager = (state) => ({
 
         item.id = parseInt(item.id, 10);
         item.parentId = parseInt(item.parentId, 10);
-        state.eventHandler.bus.publish(state.eventHandler.events.item_updated, item);
-
+        
+        return item;
 
     },
 
     removeItem: (details) => {
 
         const deleteItemsRecursively = (item, callback) => {
-          
+
             const relationships = state.relationships[item.id];
 
             if(relationships){

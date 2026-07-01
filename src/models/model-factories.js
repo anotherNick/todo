@@ -68,7 +68,7 @@ export const toDoProject = (title) => {
 
 }
 
-export const toDoSystem = (bus, events) => {
+export const toDoSystem = () => {
 
     let state = {
         project: {},
@@ -78,7 +78,6 @@ export const toDoSystem = (bus, events) => {
         relationships: {},
         unSubList: [],
         index: 1,
-        eventHandler: { bus, events },
     }
 
     

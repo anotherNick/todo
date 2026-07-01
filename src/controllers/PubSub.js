@@ -1,4 +1,5 @@
 export const events = {
+    init: "app:init",
     item_deleted: "model:item_deleted",
     item_added: "model:item_added",
     item_updated: "model:item_updated",
@@ -10,6 +11,9 @@ export const events = {
     data_save_request: "view:data_save_request",
     data_load_request: "view:data_load_request",
     data_access_error: "model:data_load_fail",
+    model_loaded: "model:model_loaded",
+    project_added: "model:project_added",
+    render_complete: "view:render_complete",
 }
 
 export class EventBus extends EventTarget {
@@ -28,3 +32,4 @@ export class EventBus extends EventTarget {
   }
 }
 
+export const pubSub = new EventBus();
