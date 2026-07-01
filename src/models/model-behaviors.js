@@ -1,5 +1,3 @@
-import { toDoItem, toDoList, toDoProject } from "./model-factories.js";
-
 export const dataManager = (state) => ({
 
     addItem: (item) => {

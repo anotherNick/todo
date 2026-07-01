@@ -1,12 +1,11 @@
 import { pubSub, events } from "./PubSub.js";
-import ToDoView from "../views/ToDoView.js";
+import { Views } from "../views/view-factories.js";
 import FormView from "../views/FormView.js"
-import { format } from "date-fns";
 
 const form = document.getElementById('new-item-form');
 const formModal = document.getElementById('form-modal');
 const submitForm = new FormView(form, formModal);
-const appView = new ToDoView(format, submitForm);
+const appView = Views();
 
 pubSub.subscribe(events.model_loaded, (toDoData) => {
     
